@@ -1,4 +1,4 @@
-####################################################################################
+###################################################################################
 ## _______  _____  _____  ______    _______  _______    __      _______  _______ ##
 ##|       ||     ||  _  ||    _ |  |       ||       |  |  |    |   _   ||  _    |##
 ##|  _____|| _   || |_| ||   | ||  |    ___||  _____|  |  |    |  |_|  || |_|   |##
@@ -8,17 +8,11 @@
 ##|_______||_____||_| |_||___|  |_||_______||_______|  |______||__| |__||_______|##
 ##|                                                                              ##
 ###################################################################################
-
-
-
+## This script is written by Rodrigo Martin de Oliveira
+## Working on my Master thesis, and learning skill necessary to do so.
+## 
 #### LIBRARIES ####
 library(dplyr)
 library(tidyr)
 library(tibble)
 library(ggplot2)
-
-
-
-## This script is written by Rodrigo Martin de Oliveira
-## Working on my Master thesis, and learning skill necessary to do so.
-## 
