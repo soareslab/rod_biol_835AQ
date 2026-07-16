@@ -16,3 +16,8 @@ library(dplyr)
 library(tidyr)
 library(tibble)
 library(ggplot2)
+
+
+renv::init()
+
+renv::snapshot()
