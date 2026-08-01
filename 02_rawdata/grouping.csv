@@ -1,0 +1,54 @@
+Group1,Group2,Group3,Group4,Group5,Group6
+daphniidae,micro crustaceans,animal,autochthonous,consumer,y
+sididae,micro crustaceans,animal,autochthonous,consumer,y
+bosminidae,micro crustaceans,animal,autochthonous,consumer,y
+canthocamptidae,micro crustaceans,animal,autochthonous,consumer,y
+fish_scale,fish,animal,autochthonous,consumer,y
+terrestrial_hemiptera,terrestrial insects,animal,allochthonous,consumer,y
+insect_frag,unknown insects,animal,unknown,consumer,y
+vegetal_frag,plantae,plantae,unknown,producer,y
+cladocera_frag,micro crustaceans,animal,autochthonous,consumer,y
+shiny_frag_rock,detritus,unknown,unknown,unknown,n
+translucid_frag_rock,detritus,unknown,unknown,unknown,n
+black_frag_rock,detritus,unknown,unknown,unknown,n
+animal_fragment,animal,animal,unknown,producer,y
+filamentous_algae,algae,plantae,autochthonous,producer,y
+spheric_brown_algae,algae,plantae,autochthonous,producer,y
+clamydomonas,algae,plantae,autochthonous,producer,y
+desmidiaceae,algae,plantae,autochthonous,producer,y
+chironomidae_pupa,aquatic insect,animal,autochthonous,consumer,y
+animal_mass,unknown animal frag,animal,unknown,unknown,n
+insect_egg,unknown insect,animal,unknown,consumer,y
+white_ostracoda,crustacean,animal,autochthonous,consumer,y
+translucid_ostracoda,crustacean,animal,autochthonous,consumer,y
+wrinkled_ostracoda,crustacean,animal,autochthonous,consumer,y
+chironomidae,aquatic insect,animal,autochthonous,consumer,y
+diptera,aquatic insect,animal,autochthonous,consumer,y
+clay,detritus,unknown,unknown,unknown,y
+ceratopogonidae,aquatic insect,animal,autochthonous,consumer,y
+fezes,detritus,unknown,unknown,unknown,y
+insect_1,unknown insect,animal,unknown,consumer,y
+insect_2,unknown insect,animal,unknown,consumer,y
+diptera_adult,terrestrial insect,animal,allochthonous,consumer,y
+baetidae,aquatic insect,animal,autochthonous,consumer,y
+megapodagrionidae,aquatic insect,animal,autochthonous,consumer,y
+libellulidae,aquatic insect,animal,autochthonous,consumer,y
+chydoridae,micro crustaceans,animal,autochthonous,consumer,y
+substrate,detritus,unknown,unknown,unknown,y
+noctilucaceae,noctilucales,dinoflagellate,autochthonous,unknown,y
+egg_ball_shaped,unknown ,unknown,unknown,unknown,n
+stratiomyidae,aquatic insect,animal,autochthonous,consumer,y
+ephydridae,aquatic insect,animal,autochthonous,consumer,y
+nematomorfa,animal,animal,autochthonous,consumer,y
+psephenidae,aquatic insect,animal,autochthonous,consumer,y
+acaridae,aquatic insect,animal,autochthonous,consumer,y
+odonata,aquatic insect,animal,autochthonous,consumer,y
+simulidae,aquatic insect,animal,autochthonous,consumer,y
+aglutinaded_rock_frag,detritus,unknown,unknown,unknown,n
+diatomaceas,algae,diatomaceas,autochthonous,producer,y
+tubular_algae_micro,algae,plantae,autochthonous,producer,y
+sphetical_membrane,unknown ,unknown,autochthonous,unknown,y
+leptohiphydae,aquatic insect,animal,autochthonous,consumer,y
+formicidae,terrestrial insect,animal,allochthonous,consumer,y
+vermiform_mass,unknown,unknown,unknown,unknown,y
+seed,plantae,plantae,unknown,producer,y

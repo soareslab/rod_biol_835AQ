@@ -1,0 +1,3 @@
+## THIS IS A README FILE ##
+
+This script is designed in accordance with best practices for avoiding redundant information within a database. It requires two input files: raw_data and grouping. Both files are essential for proper execution. The grouping file ensures that prey items are categorized appropriately, resulting in a more structured and interpretable analysis. Additionally, it filters the dataset to include only valid prey items, preventing non-biological entries (e.g., rocks) from being incorrectly classified as prey.
