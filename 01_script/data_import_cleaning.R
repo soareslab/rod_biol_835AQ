@@ -11,7 +11,7 @@
 ## Author: Rodrigo Martin de Oliveira
 ## Description: This script imports and cleans the data for the BIOL835AQ
 ## Source: raw_data.csv
-## Date: 2026-06-10
+## Date: 2026-07-10
 ## Please every first time that to run this script please run the renv::restore() to install the packages used in this script.
 # renv::init()
 
