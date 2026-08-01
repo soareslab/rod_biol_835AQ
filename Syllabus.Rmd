@@ -1,0 +1,115 @@
+---
+title: "Syllabus"
+output: html_document
+---
+
+### University of Regina – Department of Biology 
+Biology 835AQ – Data Science in Ecology 
+May 2026 - August 2026 
+Instructor 
+Bruno Soares 
+bruno.soares@uregina.ca 
+Boardroom, Institute of Environmental Change and Society 
+Description 
+A Directed Readings course for graduate students facilitating them to explore best practices in 
+reproducible ecological data science using R. Students will have one-on-one meetings, literature 
+engagement, and guided demonstrations on reproducibility, metadata, tidy workflows, project 
+organization, and transparent analysis. Through the course, they will develop an independent 
+ecological data pipeline, either methodological (e.g., building functions or workflows) or ecological 
+(addressing a research question). The final product must demonstrate ecological insight, good 
+workflow design, and reproducible practices. This course supports the development of key skills to use 
+available tools for data management and analysis. 
+In addition to the core seminar meetings, the course includes regular data studio sessions. These 
+sessions focus on hands-on work with student projects, troubleshooting workflows, and applying 
+reproducible data science practices in real time. 
+Course Structure 
+Phase 1 – Project Kickoff (June 29 – July 10) 
+Phase 2 – Skill Building and Project Start (July 13 – July 24) 
+Phase 3 – Pipeline Development (Late July) 
+Phase 4 – Refinement and Integration (Early August) 
+Phase 5 – Final Presentations (Mid-Late August) 
+Grade Allocation 
+Component 
+Due date 
+Weight Description 
+Ignite Presentation 
+Pipeline - Draft 1 
+Workshop Participation 
+Final Presentation 
+July 10 
+July 31 ----- 
+August 27 
+10% 
+20% 
+15% 
+15% 
+Up to 5-minute presentation describing 
+project motivation, relevance, expected 
+structure, and goals. You should schedule 
+this presentation with the instructor. 
+Early version of workflow: folder 
+structure, metadata, data import + cleaning 
+steps, initial code annotations, and at least 
+one preliminary output. This should be 
+delivered as a GitHub repository. 
+Participating at the provided workshops in 
+July. 
+5-minute presentation describing project 
+motivation, relevance, achieved structure, 
+and challenges. You should schedule this 
+presentation with the instructor. 
+Final Pipeline + Manuscript August 21 
+40% 
+Final cleaned and annotated pipeline (or 
+minimal R package/workflow) with 
+metadata, README, and a short (up to 5 
+pages) manuscript explaining ecological 
+insight, workflow reasoning, results 
+demonstration, and limitations. This 
+should be delivered as a GitHub repository 
+containing clean and annotated code, 
+metadata files, instructions, and the 
+manuscript. 
+Project Types 
+Methodological Project: students develop a workflow, pipeline, or set of functions addressing a 
+methodological challenge, such as calculating ecological indices, downloading and cleaning 
+phylogenies. wrangling trait data, cleaning biodiversity occurrences, developing API-based data 
+processing scripts. Here, the focus will be reproducibility, implementation, metadata, tool clarity, and 
+how the work fills a potential gap in available tools. 
+Ecological Question Project: students analyze a dataset to answer an ecological question using a 
+reproducible workflow. Focus: ecological reasoning, transparency and adequacy of choices, and clear, 
+reproducible pipeline structure. 
+Data Rescue Project Rescue: students reorganize, document, and validate a dataset (or integrated 
+dataset) and produce a manuscript-style data paper describing data provenance, structure, quality 
+control, and reuse potential. 
+Readings and Supporting Materials 
+Borer, E.T., Seabloom, E.W., Jones, M.B., Schildhauer, M. (2009). Some simple guidelines for 
+effective data management. Bulletin of the Ecological Society of America, 90, 205-214.  
+British Ecological Society. A guide to data management in Ecology and Evolution. 
+Broman, K.W., Woo, K.H. (2018). Data organization in spreadsheets. American Statistician, 72, 2-10. 
+Carroll, M.W. (2015). Sharing research data and intellectual property law: a primer. PLoS Biology, 13, 
+e1002235. 
+de Jonge, E., van der Loo, M. (2013). An introduction to data cleaning with R. Statistics Netherlands. 
+Gould, E., Fraser, H.S., Parker, T.H. et al. (2025). Same data, different analysts: variation in effect 
+sizes due to analytical decisions in ecology and evolutionary biology. BMC Biol 23, 35. 
+Harrison XA, Donaldson L, Correa-Cano ME, Evans J, Fisher DN, Goodwin CED, Robinson BS, 
+Hodgson DJ, Inger R. 2018. A brief introduction to mixed effects modelling and multi-model inference 
+in ecology. PeerJ 6:e4794 
+Popovic, G., Mason, T. J., Drobniak, S. M., Marques, T. A., Potts, J., Joo, R., Altwegg, R., Burns, C. 
+C. I., McCarthy, M. A., Johnston, A., Nakagawa, S., McMillan, L., Devarajan, K., Taggart, P. L., 
+Wunderlich, A., Mair, M. M., Martínez-Lanfranco, J. A., Lagisz, M., & Pottier, P. (2024). Four 
+principles for improved statistical ecology. Methods in Ecology and Evolution, 15, 266–281. 
+Roche, D.G., Kruuk, L.E., Landfear, R., Binning, S.A. (2015). Public data archiving in ecology and 
+evolution: how well are we doing? PLoS Biology, 13, e1002295. 
+William, M., Bagwell, J., Nahm Zozuz, M. (2017). Data management plans: the missing 
+perspective. Journal of Biomedical Informatics, 71, 130-142.  
+Plagiarism 
+Plagiarism is using the words, ideas or thoughts of others and presenting them as your own.  All 
+students must read “Recognizing and Avoiding Plagiarism” located here: 
+https://www.uregina.ca/student/ssc/assets/docs/pdf/Recognizing-and-Avoiding-Plagiarism.pdf 
+Students must also review the Plagiarism Spectrum located here: 
+https://www.turnitin.com/static/plagiarism-spectrum/ 
+Accommodations 
+Students in this course who may require specialized accommodations should contact the Center for 
+Student Accessibility (https://www.uregina.ca/student/accessibility/). Accommodations must be 
+requested each term, and are not retroactive. 
