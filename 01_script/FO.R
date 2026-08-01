@@ -152,6 +152,6 @@ group_by(freq_occ_grouped2$species_name, freq_occ_grouped2$sampling_area, freq_o
 
 
 #### Save grouped Occ% results ####
-write.csv(freq_occ_by_population,"01cleandata/frequency_occurrence_by_species_sampling_area.csv",row.names = FALSE)
+write.csv(freq_occ_by_population,"04_output/frequency_occurrence_by_species_sampling_area.csv",row.names = FALSE)
 
 # END OF THE SCRIPT

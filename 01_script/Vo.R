@@ -9,7 +9,7 @@
 ##|                                                                              ##
 ###################################################################################
 ## Author: Rodrigo Martin de Oliveira
-## Description: This script calculates frequency of occurrence for the BIOL835AQ
+## Description: This script calculates volume percentage for the BIOL835AQ
 ## Source:
 ## Date: 2026-07-10
 ## Please every first time that to run this script please run the renv::restore() to install the packages used in this script, nd off course run the it to initialize the renv environment.
@@ -18,10 +18,10 @@
 ## The goal of this script is to import and clean the data for the BIOL835AQ course.
 ## The data is in a wide format, with each row representing a population and each column representing a prey item.
 ## The data is then transformed into a long format, with each row representing a population-prey item combination.
-## The data is then summarized with the goal of calculate the proportional volume and frequency of occurrence of each prey item for each population.
+## The data is then summarized with the goal of calculate the proportional volume and Vol percentage of each prey item for each population.
 ## To finally get the Inportance Index IAi for each prey item in each population.
 
-## The data is then summarized with the goal of calculate the proportional volume and frequency of occurrence of each prey item for each population.
+## The data is then summarized with the goal of calculate the proportional volume and Vol percentage of each prey item for each population.
 ## To finally get the Inportance Index IAi for each prey item in each population.
 
 ## So at the endoftheday all we need is the whole pack of packages that tidyverse has to offer, so let's just install it and load it, this will save us a lot of time and lines of code, and also it's a good practice to use tidyverse for data manipulation and visualization, so here we go: 
@@ -241,7 +241,7 @@ ggplot2::ggplot(no_zeros_grouped2, aes(x = Group2, y = relative_volume_percent, 
   theme(axis.text.x = element_text(angle = 45, hjust = 1),
         legend.position = "none")
 
-write.csv(no_zeros_grouped2,"01cleandata/no_zeros_grouped2",row.names = FALSE)
+write.csv(no_zeros_grouped2,"04_output/no_zeros_grouped2",row.names = FALSE)
 
 # group 3
 
@@ -278,7 +278,7 @@ ggplot2::ggplot(no_zeros_grouped3, aes(x = Group3, y = relative_volume_percent, 
 
 # saving the grouped3 results
 
-write.csv(no_zeros_grouped3,"01cleandata/no_zeros_grouped3",row.names = FALSE)
+write.csv(no_zeros_grouped3,"05_cleandata/no_zeros_grouped3",row.names = FALSE)
 
 # group 4
 diet_grouped4 <- diet_long %>%
@@ -312,7 +312,7 @@ ggplot2::ggplot(no_zeros_grouped4, aes(x = Group4, y = relative_volume_percent, 
         legend.position = "none")
 
 # saving the grouped4 results
-write.csv(no_zeros_grouped4,"01cleandata/no_zeros_grouped4",row.names = FALSE)
+write.csv(no_zeros_grouped4,"04_output/no_zeros_grouped4",row.names = FALSE)
 
 
 #### RELATIVE VOLUME SPECIES X SAMPLING AREA ####
@@ -348,7 +348,7 @@ ggplot(relvol_by_population, aes(x = prey_item, y = relative_volume_percent, fil
         legend.position = "none")
 
 # Save grouped results
-write.csv(relvol_by_population,"01cleandata/relative_volume_by_species_sampling_area.csv",row.names = FALSE)
+write.csv(relvol_by_population,"04_output/relative_volume_by_species_sampling_area.csv",row.names = FALSE)
 
 # Remove prey items with zero total volume
 relvol_population_nonzero <- relvol_by_population %>%
@@ -367,6 +367,6 @@ ggplot(relvol_population_nonzero, aes(x = prey_item, y = relative_volume_percent
 
 
 # Saving the nonzero relative volume results
-write.csv(relvol_population_nonzero,"01cleandata/relative_volume_population_nonzero.csv",row.names = FALSE)
+write.csv(relvol_population_nonzero,"04_output/relative_volume_population_nonzero.csv",row.names = FALSE)
 
 # THE END OF THE SCRIPT, I HOPE THIS WORKS, I HOPE THIS MAKES SENSE, I HOPE THIS IS USEFUL
