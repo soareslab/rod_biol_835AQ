@@ -39,3 +39,7 @@ The prey-category columns are stored as numeric values, with many zeros indicati
 
 
 For this reason, analyses should distinguish among three situations: observed absence (0), measured positive values (>0), and missing data (NA). Treating NA as zero would likely bias summaries of diet composition.
+
+PS: I know that every script kinda does the cleaning part again, this is a feature not a defect, I just wanted to make sure that the data is clean and ready for analysis, and that the scripts are self-contained and can be run independently, with the goal of exporting it as a shiny app in the future. I also wanted to make sure that the data is clean and ready for analysis, and that the scripts are self-contained and can be run independently, with the goal of exporting it as a shiny app at the end. 
+
+Thnak you.
