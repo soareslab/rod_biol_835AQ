@@ -79,14 +79,7 @@ function(auto_gen_fish_data) {
   )
 }
 
-##### Find and replace PI for puddle1, PII for puddle2, PV for puddle3 and Perene for flowing river in the column "sampling_area" ####
-diet <- diet %>%
-  mutate(sampling_area = case_when(
-    sampling_area == "PI" ~ "puddle1",
-    sampling_area == "PII" ~ "puddle2",
-    sampling_area == "PV" ~ "puddle3",
-    sampling_area == "Perene" ~ "flowing_river",
-    TRUE ~ sampling_area))
+diet <- fish_data
 
 ##### These columns describe the fish / sampling unit #####
 meta_cols <- c(
