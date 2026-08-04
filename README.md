@@ -2,6 +2,16 @@ READ ME FILE
 
 Hello, this is a simple README file for the biol_835AQ project.
 
+A validation rule will be implemented to ensure data quality and consistency. A validation rule such as:
+
+Column 1 = sampling area
+
+Column 2 = unique ID
+
+Column 3 = species
+
+Columns 4 onward = prey volumes between 0 and 1** (Accounting for 100%) This rule is set now, but further investigation is needed to determine if the prey volumes are indeed between 0 and 1, or if they represent counts or other measurements.
+
 Overview
 This database contains dietary observation records organized in a wide-format table. Each row represents one observation unit identified by a unique specimen or sample code, and the columns record the sampling context, the focal fish species, and the quantified occurrence of prey or ingested material categories.
 
