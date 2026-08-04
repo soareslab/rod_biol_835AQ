@@ -114,12 +114,14 @@ non_empty_stomachs <- diet_occurrence %>%
 
 non_empty_stomachs <- diet_occurrence %>%
   group_by(Fish_uniq_id) %>%
-  summarise(non_empty = any(present %in% TRUE), .groups = "drop") %>%
-  filter(non_empty)
+  summarise(non_empty = any(present %in% TRUE), .groups = "drop")
 
-diet_occurrence_nonempty <- diet_occurrence %>%
-  filter(Fish_uniq_id %in% non_empty_stomachs$Fish_uniq_id)
-
+if (any(non_empty_stomachs$non_empty)) {
+  diet_occurrence_nonempty <- diet_occurrence %>%
+    filter(Fish_uniq_id %in% non_empty_stomachs$Fish_uniq_id[non_empty_stomachs$non_empty])
+} else {
+  diet_occurrence_nonempty <- diet_occurrence
+}
 #### Compute Occ% by population ####
 freq_occ_by_population <- diet_occurrence_nonempty %>%
   group_by(Species, Sampling_area, prey_item) %>%
@@ -142,6 +144,11 @@ ggplot(freq_occ_by_population, aes(x = prey_item, y = frequency_occurrence,
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1),
         legend.position = "none")
+
+#### END OF THE SCRIPT ####
+
+
+
 
 #### Frequency of occurrence grouped ####
 # The magic of joining the grouping file to the long diet data, this will add the grouping levels to the diet data starts here
