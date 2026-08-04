@@ -82,14 +82,12 @@ function(auto_gen_fish_data) {
 diet <- fish_data
 
 ##### These columns describe the fish / sampling unit #####
-meta_cols <- c(
-  "sampling_area",
-  "unique_identifier",
-  "species_name")
+meta_cols <- names(diet)[1:3]
+meta_cols
 
 #### Everything else is a prey item ####
-prey_cols <- setdiff(names(diet), meta_cols)
-
+prey_cols <- names(diet)[-(1:3)]
+prey_cols
 
 #### Convert wide diet matrix to long format ####
 diet_long <- diet %>%
@@ -106,7 +104,7 @@ diet_occurrence <- diet_long %>%
 ##### Identify non‑empty stomachs, A stomach is considered non‑empty if at least one prey item is present.
 
 non_empty_stomachs <- diet_occurrence %>%
-  group_by(unique_identifier) %>%
+  group_by(Fish_uniq_id) %>%
   reframe(
     total_items = (present),
     .groups = "drop") %>% 
