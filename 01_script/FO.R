@@ -110,26 +110,32 @@ non_empty_stomachs <- diet_occurrence %>%
     .groups = "drop") %>% 
   filter(total_items > 0)
 
-#### Keep only non‑empty stomachs ####
+#### Keep only non-empty stomachs, but still moves on if isn't any zero values ####
+
+non_empty_stomachs <- diet_occurrence %>%
+  group_by(Fish_uniq_id) %>%
+  summarise(non_empty = any(present %in% TRUE), .groups = "drop") %>%
+  filter(non_empty)
 
 diet_occurrence_nonempty <- diet_occurrence %>%
-  filter(unique_identifier %in% non_empty_stomachs$unique_identifier)
+  filter(Fish_uniq_id %in% non_empty_stomachs$Fish_uniq_id)
 
 #### Compute Occ% by population ####
 freq_occ_by_population <- diet_occurrence_nonempty %>%
-  group_by(species_name, sampling_area, prey_item) %>%
-  reframe(
-    stomachs_with_prey = sum(present),
-    total_stomachs = n_distinct(unique_identifier),
+  group_by(Species, Sampling_area, prey_item) %>%
+  summarise(
+    stomachs_with_prey = sum(present, na.rm = TRUE),
+    total_stomachs = n_distinct(Fish_uniq_id),
     frequency_occurrence = (stomachs_with_prey / total_stomachs) * 100,
-    .groups = "drop") %>%
-  arrange(species_name, sampling_area, desc(frequency_occurrence))
+    .groups = "drop"
+  ) %>%
+  arrange(Species, Sampling_area, desc(frequency_occurrence))
 
 #### Plot frequency of occurrence by species and sampling area ####
 ggplot(freq_occ_by_population, aes(x = prey_item, y = frequency_occurrence,
                                    fill = prey_item)) +
   geom_bar(stat = "identity") +
-  facet_grid(species_name ~ sampling_area) +
+  facet_grid(Species ~ Sampling_area) +
   labs(title = "Frequency of Occurrence of Prey Items by Species and Sampling Area",
        x = "Prey Item",
        y = "Frequency of Occurrence (%)") +
