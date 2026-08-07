@@ -67,11 +67,20 @@ ui <- fluidPage(
         selected = "all"
       ),
       
-      actionButton("run_analysis", "Run analysis")
+      actionButton("run_analysis", "Run analysis"),
+      
+      tags$hr(),
+      
+      downloadButton("download_current", "Export current table"),
+      br(), br(),
+      downloadButton("download_all", "Export all tables (.zip)"),
+      br(), br(),
+      downloadButton("download_filtered_raw", "Export filtered raw data")
     ),
     
     mainPanel(
       verbatimTextOutput("format_check"),
+      
       tabsetPanel(
         tabPanel("Preview", DTOutput("data_preview")),
         tabPanel("Frequency of occurrence", DTOutput("fo_table")),
@@ -134,6 +143,7 @@ server <- function(input, output, session) {
   
   output$format_check <- renderText({
     req(filtered_data())
+    
     paste(
       "File accepted.",
       "| Sampling area filter:", input$sampling_filter,
@@ -152,6 +162,10 @@ server <- function(input, output, session) {
     
     df <- filtered_data()
     
+    validate(
+      need(nrow(df) > 0, "No rows available for the selected sampling area.")
+    )
+    
     long_df <- df %>%
       tidyr::pivot_longer(
         cols = 4:ncol(df),
@@ -163,7 +177,11 @@ server <- function(input, output, session) {
       distinct(unique_id) %>%
       nrow()
     
-    out <- list()
+    out <- list(
+      fo = NULL,
+      vp = NULL,
+      iai = NULL
+    )
     
     if (input$analysis_type %in% c("fo", "iai", "all")) {
       fo <- long_df %>%
@@ -201,7 +219,9 @@ server <- function(input, output, session) {
           FO_percent = coalesce(FO_percent, 0),
           V_percent = coalesce(V_percent, 0),
           IAi_raw = FO_percent * V_percent,
-          IAi_percent = (IAi_raw / sum(IAi_raw, na.rm = TRUE)) * 100
+          IAi_percent = ifelse(sum(IAi_raw, na.rm = TRUE) > 0,
+                               (IAi_raw / sum(IAi_raw, na.rm = TRUE)) * 100,
+                               0)
         ) %>%
         arrange(desc(IAi_percent))
       
@@ -212,19 +232,120 @@ server <- function(input, output, session) {
   })
   
   output$fo_table <- renderDT({
-    req(analysis_results()$fo)
+    req(analysis_results())
+    req(!is.null(analysis_results()$fo))
     datatable(analysis_results()$fo, options = list(scrollX = TRUE))
   })
   
   output$vp_table <- renderDT({
-    req(analysis_results()$vp)
+    req(analysis_results())
+    req(!is.null(analysis_results()$vp))
     datatable(analysis_results()$vp, options = list(scrollX = TRUE))
   })
   
   output$iai_table <- renderDT({
-    req(analysis_results()$iai)
+    req(analysis_results())
+    req(!is.null(analysis_results()$iai))
     datatable(analysis_results()$iai, options = list(scrollX = TRUE))
   })
+  
+  output$download_current <- downloadHandler(
+    filename = function() {
+      area_name <- if (input$sampling_filter == "All sampling areas") {
+        "all_areas"
+      } else {
+        gsub("[^A-Za-z0-9_]+", "_", input$sampling_filter)
+      }
+      
+      analysis_name <- switch(
+        input$analysis_type,
+        "fo" = "frequency_of_occurrence",
+        "vp" = "volume_percentage",
+        "iai" = "iai",
+        "all" = "all_analyses_current_view"
+      )
+      
+      paste0("diet_", area_name, "_", analysis_name, "_", Sys.Date(), ".csv")
+    },
+    content = function(file) {
+      req(analysis_results())
+      res <- analysis_results()
+      
+      export_table <- switch(
+        input$analysis_type,
+        "fo" = res$fo,
+        "vp" = res$vp,
+        "iai" = res$iai,
+        "all" = bind_rows(
+          if (!is.null(res$fo)) mutate(res$fo, analysis = "Frequency of occurrence"),
+          if (!is.null(res$vp)) mutate(res$vp, analysis = "Volume percentage"),
+          if (!is.null(res$iai)) mutate(res$iai, analysis = "IAi")
+        )
+      )
+      
+      write.csv(export_table, file, row.names = FALSE)
+    }
+  )
+  
+  output$download_all <- downloadHandler(
+    filename = function() {
+      area_name <- if (input$sampling_filter == "All sampling areas") {
+        "all_areas"
+      } else {
+        gsub("[^A-Za-z0-9_]+", "_", input$sampling_filter)
+      }
+      
+      paste0("diet_", area_name, "_all_tables_", Sys.Date(), ".zip")
+    },
+    content = function(file) {
+      req(analysis_results())
+      res <- analysis_results()
+      
+      tmpdir <- tempdir()
+      files_to_zip <- character()
+      
+      if (!is.null(res$fo)) {
+        fo_path <- file.path(tmpdir, "frequency_of_occurrence.csv")
+        write.csv(res$fo, fo_path, row.names = FALSE)
+        files_to_zip <- c(files_to_zip, fo_path)
+      }
+      
+      if (!is.null(res$vp)) {
+        vp_path <- file.path(tmpdir, "volume_percentage.csv")
+        write.csv(res$vp, vp_path, row.names = FALSE)
+        files_to_zip <- c(files_to_zip, vp_path)
+      }
+      
+      if (!is.null(res$iai)) {
+        iai_path <- file.path(tmpdir, "iai.csv")
+        write.csv(res$iai, iai_path, row.names = FALSE)
+        files_to_zip <- c(files_to_zip, iai_path)
+      }
+      
+      validate(
+        need(length(files_to_zip) > 0, "No result tables available to export.")
+      )
+      
+      utils::zip(zipfile = file, files = files_to_zip, flags = "-j")
+    },
+    contentType = "application/zip"
+  )
+  
+  output$download_filtered_raw <- downloadHandler(
+    filename = function() {
+      area_name <- if (input$sampling_filter == "All sampling areas") {
+        "all_areas"
+      } else {
+        gsub("[^A-Za-z0-9_]+", "_", input$sampling_filter)
+      }
+      
+      paste0("diet_filtered_raw_", area_name, "_", Sys.Date(), ".csv")
+    },
+    content = function(file) {
+      req(filtered_data())
+      write.csv(filtered_data(), file, row.names = FALSE)
+    }
+  )
 }
 
 shinyApp(ui, server)

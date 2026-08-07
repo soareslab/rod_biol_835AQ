@@ -32,9 +32,9 @@ fish_data <- data.frame(
 )
 
 # Add prey-volume columns with values between 0.01 and 1.00
-for (i in 1:n_prey) {
+for (i in 1:n_prey) 
   fish_data[[paste0("prey_", i)]] <- round(runif(n_fish, min = 0.01, max = 1.00), 2)
-}
+
 
 # Add some zeros to simulate absence of prey items (35% chance of being zero)
 fish_data[[paste0("prey_", i)]] <- ifelse(
@@ -44,6 +44,7 @@ fish_data[[paste0("prey_", i)]] <- ifelse(
 )
 
 # save the generated data to a CSV file 
-write.csv(fish_data, "02_rawdata/generated_fish_data2.csv", row.names = FALSE)
+write.csv(fish_data, "02_rawdata/generated_fish_data.csv", row.names = FALSE)
 
 }
+
