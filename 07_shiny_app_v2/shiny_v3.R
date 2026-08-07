@@ -57,7 +57,7 @@ ui <- fluidPage(
       
       selectInput(
         "analysis_type",
-        "Choose analysis",
+        "Choose analysis to display",
         choices = c(
           "Frequency of occurrence" = "fo",
           "Volume percentage" = "vp",
@@ -71,11 +71,15 @@ ui <- fluidPage(
       
       tags$hr(),
       
-      downloadButton("download_current", "Export current table"),
+      tags$strong("Download results"),
       br(), br(),
-      downloadButton("download_all", "Export all tables (.zip)"),
+      downloadButton("download_fo", "Download FO (.csv)"),
       br(), br(),
-      downloadButton("download_filtered_raw", "Export filtered raw data")
+      downloadButton("download_vp", "Download V% (.csv)"),
+      br(), br(),
+      downloadButton("download_iai", "Download IAi (.csv)"),
+      br(), br(),
+      downloadButton("download_filtered_raw", "Download filtered raw data (.csv)")
     ),
     
     mainPanel(
@@ -177,79 +181,64 @@ server <- function(input, output, session) {
       distinct(unique_id) %>%
       nrow()
     
-    out <- list(
-      fo = NULL,
-      vp = NULL,
-      iai = NULL
+    fo <- long_df %>%
+      filter(!is.na(volume), volume > 0) %>%
+      group_by(prey_item) %>%
+      summarise(
+        stomachs_with_item = n_distinct(unique_id),
+        FO_percent = (stomachs_with_item / stomach_n) * 100,
+        .groups = "drop"
+      ) %>%
+      arrange(desc(FO_percent))
+    
+    vp <- long_df %>%
+      filter(!is.na(volume), volume > 0) %>%
+      group_by(prey_item) %>%
+      summarise(
+        total_volume = sum(volume, na.rm = TRUE),
+        .groups = "drop"
+      ) %>%
+      mutate(
+        V_percent = ifelse(sum(total_volume) > 0,
+                           (total_volume / sum(total_volume)) * 100,
+                           0)
+      ) %>%
+      arrange(desc(V_percent))
+    
+    iai <- full_join(fo, vp, by = "prey_item") %>%
+      mutate(
+        FO_percent = coalesce(FO_percent, 0),
+        V_percent = coalesce(V_percent, 0),
+        IAi_raw = FO_percent * V_percent,
+        IAi_percent = ifelse(sum(IAi_raw, na.rm = TRUE) > 0,
+                             (IAi_raw / sum(IAi_raw, na.rm = TRUE)) * 100,
+                             0)
+      ) %>%
+      arrange(desc(IAi_percent))
+    
+    list(
+      fo = fo,
+      vp = vp,
+      iai = iai
     )
-    
-    if (input$analysis_type %in% c("fo", "iai", "all")) {
-      fo <- long_df %>%
-        filter(!is.na(volume), volume > 0) %>%
-        group_by(prey_item) %>%
-        summarise(
-          stomachs_with_item = n_distinct(unique_id),
-          FO_percent = (stomachs_with_item / stomach_n) * 100,
-          .groups = "drop"
-        ) %>%
-        arrange(desc(FO_percent))
-      
-      out$fo <- fo
-    }
-    
-    if (input$analysis_type %in% c("vp", "iai", "all")) {
-      vp <- long_df %>%
-        filter(!is.na(volume), volume > 0) %>%
-        group_by(prey_item) %>%
-        summarise(
-          total_volume = sum(volume, na.rm = TRUE),
-          .groups = "drop"
-        ) %>%
-        mutate(
-          V_percent = (total_volume / sum(total_volume)) * 100
-        ) %>%
-        arrange(desc(V_percent))
-      
-      out$vp <- vp
-    }
-    
-    if (input$analysis_type %in% c("iai", "all")) {
-      iai <- full_join(out$fo, out$vp, by = "prey_item") %>%
-        mutate(
-          FO_percent = coalesce(FO_percent, 0),
-          V_percent = coalesce(V_percent, 0),
-          IAi_raw = FO_percent * V_percent,
-          IAi_percent = ifelse(sum(IAi_raw, na.rm = TRUE) > 0,
-                               (IAi_raw / sum(IAi_raw, na.rm = TRUE)) * 100,
-                               0)
-        ) %>%
-        arrange(desc(IAi_percent))
-      
-      out$iai <- iai
-    }
-    
-    out
   })
   
   output$fo_table <- renderDT({
     req(analysis_results())
-    req(!is.null(analysis_results()$fo))
     datatable(analysis_results()$fo, options = list(scrollX = TRUE))
   })
   
   output$vp_table <- renderDT({
     req(analysis_results())
-    req(!is.null(analysis_results()$vp))
     datatable(analysis_results()$vp, options = list(scrollX = TRUE))
   })
   
   output$iai_table <- renderDT({
     req(analysis_results())
-    req(!is.null(analysis_results()$iai))
     datatable(analysis_results()$iai, options = list(scrollX = TRUE))
   })
   
-  output$download_current <- downloadHandler(
+  output$download_fo <- downloadHandler(
     filename = function() {
       area_name <- if (input$sampling_filter == "All sampling areas") {
         "all_areas"
@@ -257,37 +246,15 @@ server <- function(input, output, session) {
         gsub("[^A-Za-z0-9_]+", "_", input$sampling_filter)
       }
       
-      analysis_name <- switch(
-        input$analysis_type,
-        "fo" = "frequency_of_occurrence",
-        "vp" = "volume_percentage",
-        "iai" = "iai",
-        "all" = "all_analyses_current_view"
-      )
-      
-      paste0("diet_", area_name, "_", analysis_name, "_", Sys.Date(), ".csv")
+      paste0("frequency_of_occurrence_", area_name, "_", Sys.Date(), ".csv")
     },
     content = function(file) {
       req(analysis_results())
-      res <- analysis_results()
-      
-      export_table <- switch(
-        input$analysis_type,
-        "fo" = res$fo,
-        "vp" = res$vp,
-        "iai" = res$iai,
-        "all" = bind_rows(
-          if (!is.null(res$fo)) mutate(res$fo, analysis = "Frequency of occurrence"),
-          if (!is.null(res$vp)) mutate(res$vp, analysis = "Volume percentage"),
-          if (!is.null(res$iai)) mutate(res$iai, analysis = "IAi")
-        )
-      )
-      
-      write.csv(export_table, file, row.names = FALSE)
+      write.csv(analysis_results()$fo, file, row.names = FALSE)
     }
   )
   
-  output$download_all <- downloadHandler(
+  output$download_vp <- downloadHandler(
     filename = function() {
       area_name <- if (input$sampling_filter == "All sampling areas") {
         "all_areas"
@@ -295,40 +262,28 @@ server <- function(input, output, session) {
         gsub("[^A-Za-z0-9_]+", "_", input$sampling_filter)
       }
       
-      paste0("diet_", area_name, "_all_tables_", Sys.Date(), ".zip")
+      paste0("volume_percentage_", area_name, "_", Sys.Date(), ".csv")
     },
     content = function(file) {
       req(analysis_results())
-      res <- analysis_results()
-      
-      tmpdir <- tempdir()
-      files_to_zip <- character()
-      
-      if (!is.null(res$fo)) {
-        fo_path <- file.path(tmpdir, "frequency_of_occurrence.csv")
-        write.csv(res$fo, fo_path, row.names = FALSE)
-        files_to_zip <- c(files_to_zip, fo_path)
+      write.csv(analysis_results()$vp, file, row.names = FALSE)
+    }
+  )
+  
+  output$download_iai <- downloadHandler(
+    filename = function() {
+      area_name <- if (input$sampling_filter == "All sampling areas") {
+        "all_areas"
+      } else {
+        gsub("[^A-Za-z0-9_]+", "_", input$sampling_filter)
       }
       
-      if (!is.null(res$vp)) {
-        vp_path <- file.path(tmpdir, "volume_percentage.csv")
-        write.csv(res$vp, vp_path, row.names = FALSE)
-        files_to_zip <- c(files_to_zip, vp_path)
-      }
-      
-      if (!is.null(res$iai)) {
-        iai_path <- file.path(tmpdir, "iai.csv")
-        write.csv(res$iai, iai_path, row.names = FALSE)
-        files_to_zip <- c(files_to_zip, iai_path)
-      }
-      
-      validate(
-        need(length(files_to_zip) > 0, "No result tables available to export.")
-      )
-      
-      utils::zip(zipfile = file, files = files_to_zip, flags = "-j")
+      paste0("iai_", area_name, "_", Sys.Date(), ".csv")
     },
-    contentType = "application/zip"
+    content = function(file) {
+      req(analysis_results())
+      write.csv(analysis_results()$iai, file, row.names = FALSE)
+    }
   )
   
   output$download_filtered_raw <- downloadHandler(
@@ -339,7 +294,7 @@ server <- function(input, output, session) {
         gsub("[^A-Za-z0-9_]+", "_", input$sampling_filter)
       }
       
-      paste0("diet_filtered_raw_", area_name, "_", Sys.Date(), ".csv")
+      paste0("filtered_raw_data_", area_name, "_", Sys.Date(), ".csv")
     },
     content = function(file) {
       req(filtered_data())
