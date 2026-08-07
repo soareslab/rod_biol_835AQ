@@ -30,7 +30,7 @@ library(tidyr)
 library(DT)
 
 ui <- fluidPage(
-  titlePanel("Diet Analysis App"),
+  titlePanel("Soares Lab Diet Analysis Tool"),
   
   sidebarLayout(
     sidebarPanel(
