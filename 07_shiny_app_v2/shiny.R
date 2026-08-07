@@ -21,8 +21,6 @@
 #renv::snapshot()
 #renv::restore()
 
-
-
 library(shiny)
 library(dplyr)
 library(readr)
@@ -30,7 +28,32 @@ library(tidyr)
 library(DT)
 
 ui <- fluidPage(
-  titlePanel("Soares Lab Diet Analysis Tool"),
+  
+  tags$div(
+    style = "
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      margin-bottom: 20px;
+      padding: 12px 0 16px 0;
+      border-bottom: 2px solid #e5e5e5;
+    ",
+    tags$a(
+      href = "https://github.com/soareslab",
+      target = "_blank",
+      title = "Open Soares Lab GitHub page",
+      tags$img(
+        src = "https://avatars.githubusercontent.com/u/201822899?s=96&v=4",
+        height = "90px",
+        alt = "Soares Lab logo",
+        style = "cursor: pointer;"
+      )
+    ),
+    tags$div(
+      tags$h2("Diet Analysis App", style = "margin: 0;"),
+      tags$p("Soares Lab", style = "margin: 4px 0 0 0; color: #666; font-size: 16px;")
+    )
+  ),
   
   sidebarLayout(
     sidebarPanel(
@@ -149,7 +172,6 @@ server <- function(input, output, session) {
     )
   })
   
-  # Update species choices after area selection
   observeEvent(input$sampling_filter, {
     req(uploaded_data())
     
@@ -175,7 +197,6 @@ server <- function(input, output, session) {
     )
   })
   
-  # Filtered dataset
   filtered_data <- reactive({
     req(uploaded_data())
     
@@ -192,7 +213,6 @@ server <- function(input, output, session) {
     df
   })
   
-  # Status text
   output$format_check <- renderText({
     req(filtered_data())
     
@@ -301,8 +321,18 @@ server <- function(input, output, session) {
   
   output$download_fo <- downloadHandler(
     filename = function() {
-      area_name <- if (input$sampling_filter == "All sampling areas") "all_areas" else gsub("[^A-Za-z0-9_]+", "_", input$sampling_filter)
-      species_name <- if (input$species_filter == "All species") "all_species" else gsub("[^A-Za-z0-9_]+", "_", input$species_filter)
+      area_name <- if (is.null(input$sampling_filter) || length(input$sampling_filter) == 0) {
+        "all_areas"
+      } else {
+        paste(gsub("[^A-Za-z0-9_]+", "_", input$sampling_filter), collapse = "_")
+      }
+      
+      species_name <- if (is.null(input$species_filter) || length(input$species_filter) == 0) {
+        "all_species"
+      } else {
+        paste(gsub("[^A-Za-z0-9_]+", "_", input$species_filter), collapse = "_")
+      }
+      
       paste0("frequency_of_occurrence_", area_name, "_", species_name, "_", Sys.Date(), ".csv")
     },
     content = function(file) {
@@ -313,8 +343,18 @@ server <- function(input, output, session) {
   
   output$download_vp <- downloadHandler(
     filename = function() {
-      area_name <- if (input$sampling_filter == "All sampling areas") "all_areas" else gsub("[^A-Za-z0-9_]+", "_", input$sampling_filter)
-      species_name <- if (input$species_filter == "All species") "all_species" else gsub("[^A-Za-z0-9_]+", "_", input$species_filter)
+      area_name <- if (is.null(input$sampling_filter) || length(input$sampling_filter) == 0) {
+        "all_areas"
+      } else {
+        paste(gsub("[^A-Za-z0-9_]+", "_", input$sampling_filter), collapse = "_")
+      }
+      
+      species_name <- if (is.null(input$species_filter) || length(input$species_filter) == 0) {
+        "all_species"
+      } else {
+        paste(gsub("[^A-Za-z0-9_]+", "_", input$species_filter), collapse = "_")
+      }
+      
       paste0("volume_percentage_", area_name, "_", species_name, "_", Sys.Date(), ".csv")
     },
     content = function(file) {
@@ -325,8 +365,18 @@ server <- function(input, output, session) {
   
   output$download_iai <- downloadHandler(
     filename = function() {
-      area_name <- if (input$sampling_filter == "All sampling areas") "all_areas" else gsub("[^A-Za-z0-9_]+", "_", input$sampling_filter)
-      species_name <- if (input$species_filter == "All species") "all_species" else gsub("[^A-Za-z0-9_]+", "_", input$species_filter)
+      area_name <- if (is.null(input$sampling_filter) || length(input$sampling_filter) == 0) {
+        "all_areas"
+      } else {
+        paste(gsub("[^A-Za-z0-9_]+", "_", input$sampling_filter), collapse = "_")
+      }
+      
+      species_name <- if (is.null(input$species_filter) || length(input$species_filter) == 0) {
+        "all_species"
+      } else {
+        paste(gsub("[^A-Za-z0-9_]+", "_", input$species_filter), collapse = "_")
+      }
+      
       paste0("iai_", area_name, "_", species_name, "_", Sys.Date(), ".csv")
     },
     content = function(file) {
@@ -337,8 +387,18 @@ server <- function(input, output, session) {
   
   output$download_filtered_raw <- downloadHandler(
     filename = function() {
-      area_name <- if (input$sampling_filter == "All sampling areas") "all_areas" else gsub("[^A-Za-z0-9_]+", "_", input$sampling_filter)
-      species_name <- if (input$species_filter == "All species") "all_species" else gsub("[^A-Za-z0-9_]+", "_", input$species_filter)
+      area_name <- if (is.null(input$sampling_filter) || length(input$sampling_filter) == 0) {
+        "all_areas"
+      } else {
+        paste(gsub("[^A-Za-z0-9_]+", "_", input$sampling_filter), collapse = "_")
+      }
+      
+      species_name <- if (is.null(input$species_filter) || length(input$species_filter) == 0) {
+        "all_species"
+      } else {
+        paste(gsub("[^A-Za-z0-9_]+", "_", input$species_filter), collapse = "_")
+      }
+      
       paste0("filtered_raw_data_", area_name, "_", species_name, "_", Sys.Date(), ".csv")
     },
     content = function(file) {
@@ -349,3 +409,4 @@ server <- function(input, output, session) {
 }
 
 shinyApp(ui, server)
+
