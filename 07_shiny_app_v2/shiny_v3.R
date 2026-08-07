@@ -56,6 +56,13 @@ ui <- fluidPage(
       ),
       
       selectInput(
+        "species_filter",
+        "Select species",
+        choices = "All species",
+        selected = "All species"
+      ),
+      
+      selectInput(
         "analysis_type",
         "Choose analysis to display",
         choices = c(
@@ -131,6 +138,42 @@ server <- function(input, output, session) {
       choices = c("All sampling areas", sort(unique(uploaded_data()$sampling_area))),
       selected = "All sampling areas"
     )
+    
+    updateSelectInput(
+      session,
+      "species_filter",
+      choices = c("All species", sort(unique(uploaded_data()$species))),
+      selected = "All species"
+    )
+  })
+  
+  observeEvent(input$sampling_filter, {
+    req(uploaded_data())
+    
+    df <- uploaded_data()
+    
+    species_choices <- if (input$sampling_filter == "All sampling areas") {
+      sort(unique(df$species))
+    } else {
+      df %>%
+        filter(sampling_area == input$sampling_filter) %>%
+        pull(species) %>%
+        unique() %>%
+        sort()
+    }
+    
+    selected_species <- if (input$species_filter %in% species_choices) {
+      input$species_filter
+    } else {
+      "All species"
+    }
+    
+    updateSelectInput(
+      session,
+      "species_filter",
+      choices = c("All species", species_choices),
+      selected = selected_species
+    )
   })
   
   filtered_data <- reactive({
@@ -138,11 +181,15 @@ server <- function(input, output, session) {
     
     df <- uploaded_data()
     
-    if (input$sampling_filter == "All sampling areas") {
-      df
-    } else {
-      df %>% filter(sampling_area == input$sampling_filter)
+    if (input$sampling_filter != "All sampling areas") {
+      df <- df %>% filter(sampling_area == input$sampling_filter)
     }
+    
+    if (input$species_filter != "All species") {
+      df <- df %>% filter(species == input$species_filter)
+    }
+    
+    df
   })
   
   output$format_check <- renderText({
@@ -151,6 +198,7 @@ server <- function(input, output, session) {
     paste(
       "File accepted.",
       "| Sampling area filter:", input$sampling_filter,
+      "| Species filter:", input$species_filter,
       "| Rows in current selection:", nrow(filtered_data()),
       "| Number of prey columns:", ncol(filtered_data()) - 3
     )
@@ -167,7 +215,7 @@ server <- function(input, output, session) {
     df <- filtered_data()
     
     validate(
-      need(nrow(df) > 0, "No rows available for the selected sampling area.")
+      need(nrow(df) > 0, "No rows available for the selected filters.")
     )
     
     long_df <- df %>%
@@ -240,13 +288,9 @@ server <- function(input, output, session) {
   
   output$download_fo <- downloadHandler(
     filename = function() {
-      area_name <- if (input$sampling_filter == "All sampling areas") {
-        "all_areas"
-      } else {
-        gsub("[^A-Za-z0-9_]+", "_", input$sampling_filter)
-      }
-      
-      paste0("frequency_of_occurrence_", area_name, "_", Sys.Date(), ".csv")
+      area_name <- if (input$sampling_filter == "All sampling areas") "all_areas" else gsub("[^A-Za-z0-9_]+", "_", input$sampling_filter)
+      species_name <- if (input$species_filter == "All species") "all_species" else gsub("[^A-Za-z0-9_]+", "_", input$species_filter)
+      paste0("frequency_of_occurrence_", area_name, "_", species_name, "_", Sys.Date(), ".csv")
     },
     content = function(file) {
       req(analysis_results())
@@ -256,13 +300,9 @@ server <- function(input, output, session) {
   
   output$download_vp <- downloadHandler(
     filename = function() {
-      area_name <- if (input$sampling_filter == "All sampling areas") {
-        "all_areas"
-      } else {
-        gsub("[^A-Za-z0-9_]+", "_", input$sampling_filter)
-      }
-      
-      paste0("volume_percentage_", area_name, "_", Sys.Date(), ".csv")
+      area_name <- if (input$sampling_filter == "All sampling areas") "all_areas" else gsub("[^A-Za-z0-9_]+", "_", input$sampling_filter)
+      species_name <- if (input$species_filter == "All species") "all_species" else gsub("[^A-Za-z0-9_]+", "_", input$species_filter)
+      paste0("volume_percentage_", area_name, "_", species_name, "_", Sys.Date(), ".csv")
     },
     content = function(file) {
       req(analysis_results())
@@ -272,13 +312,9 @@ server <- function(input, output, session) {
   
   output$download_iai <- downloadHandler(
     filename = function() {
-      area_name <- if (input$sampling_filter == "All sampling areas") {
-        "all_areas"
-      } else {
-        gsub("[^A-Za-z0-9_]+", "_", input$sampling_filter)
-      }
-      
-      paste0("iai_", area_name, "_", Sys.Date(), ".csv")
+      area_name <- if (input$sampling_filter == "All sampling areas") "all_areas" else gsub("[^A-Za-z0-9_]+", "_", input$sampling_filter)
+      species_name <- if (input$species_filter == "All species") "all_species" else gsub("[^A-Za-z0-9_]+", "_", input$species_filter)
+      paste0("iai_", area_name, "_", species_name, "_", Sys.Date(), ".csv")
     },
     content = function(file) {
       req(analysis_results())
@@ -288,13 +324,9 @@ server <- function(input, output, session) {
   
   output$download_filtered_raw <- downloadHandler(
     filename = function() {
-      area_name <- if (input$sampling_filter == "All sampling areas") {
-        "all_areas"
-      } else {
-        gsub("[^A-Za-z0-9_]+", "_", input$sampling_filter)
-      }
-      
-      paste0("filtered_raw_data_", area_name, "_", Sys.Date(), ".csv")
+      area_name <- if (input$sampling_filter == "All sampling areas") "all_areas" else gsub("[^A-Za-z0-9_]+", "_", input$sampling_filter)
+      species_name <- if (input$species_filter == "All species") "all_species" else gsub("[^A-Za-z0-9_]+", "_", input$species_filter)
+      paste0("filtered_raw_data_", area_name, "_", species_name, "_", Sys.Date(), ".csv")
     },
     content = function(file) {
       req(filtered_data())
