@@ -25,9 +25,9 @@ n_prey <- 60
 
 # Create main columns
 fish_data <- data.frame(
-  Sampling_area = sample(sampling_areas, n_fish, replace = TRUE),
-  Fish_uniq_id = sprintf("F%04d", 1:n_fish),
-  Species = sample(species_list, n_fish, replace = TRUE),
+  sampling_area = sample(sampling_areas, n_fish, replace = TRUE),
+  unique_id = sprintf("F%04d", 1:n_fish),
+  species = sample(species_list, n_fish, replace = TRUE),
   stringsAsFactors = FALSE
 )
 
@@ -42,4 +42,8 @@ fish_data[[paste0("prey_", i)]] <- ifelse(
   0,
   round(runif(n_fish, min = 0.01, max = 1.00), 2)
 )
+
+# save the generated data to a CSV file 
+write.csv(fish_data, "02_rawdata/generated_fish_data2.csv", row.names = FALSE)
+
 }
