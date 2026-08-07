@@ -50,16 +50,18 @@ ui <- fluidPage(
       
       selectInput(
         "sampling_filter",
-        "Select sampling area",
-        choices = "All sampling areas",
-        selected = "All sampling areas"
+        "Select sampling area(s)",
+        choices = NULL,
+        selected = NULL,
+        multiple = TRUE
       ),
       
       selectInput(
         "species_filter",
         "Select species",
-        choices = "All species",
-        selected = "All species"
+        choices = NULL,
+        selected = NULL,
+        multiple = TRUE
       ),
       
       selectInput(
@@ -135,70 +137,81 @@ server <- function(input, output, session) {
     updateSelectInput(
       session,
       "sampling_filter",
-      choices = c("All sampling areas", sort(unique(uploaded_data()$sampling_area))),
-      selected = "All sampling areas"
+      choices = sort(unique(uploaded_data()$sampling_area)),
+      selected = NULL
     )
     
     updateSelectInput(
       session,
       "species_filter",
-      choices = c("All species", sort(unique(uploaded_data()$species))),
-      selected = "All species"
+      choices = sort(unique(uploaded_data()$species)),
+      selected = NULL
     )
   })
   
+  # Update species choices after area selection
   observeEvent(input$sampling_filter, {
     req(uploaded_data())
     
     df <- uploaded_data()
     
-    species_choices <- if (input$sampling_filter == "All sampling areas") {
-      sort(unique(df$species))
-    } else {
+    species_choices <- if (!is.null(input$sampling_filter) && length(input$sampling_filter) > 0) {
       df %>%
-        filter(sampling_area == input$sampling_filter) %>%
+        filter(sampling_area %in% input$sampling_filter) %>%
         pull(species) %>%
         unique() %>%
         sort()
+    } else {
+      sort(unique(df$species))
     }
     
-    selected_species <- if (input$species_filter %in% species_choices) {
-      input$species_filter
-    } else {
-      "All species"
-    }
+    selected_species <- intersect(input$species_filter, species_choices)
     
     updateSelectInput(
       session,
       "species_filter",
-      choices = c("All species", species_choices),
+      choices = species_choices,
       selected = selected_species
     )
   })
   
+  # Filtered dataset
   filtered_data <- reactive({
     req(uploaded_data())
     
     df <- uploaded_data()
     
-    if (input$sampling_filter != "All sampling areas") {
-      df <- df %>% filter(sampling_area == input$sampling_filter)
+    if (!is.null(input$sampling_filter) && length(input$sampling_filter) > 0) {
+      df <- df %>% filter(sampling_area %in% input$sampling_filter)
     }
     
-    if (input$species_filter != "All species") {
-      df <- df %>% filter(species == input$species_filter)
+    if (!is.null(input$species_filter) && length(input$species_filter) > 0) {
+      df <- df %>% filter(species %in% input$species_filter)
     }
     
     df
   })
   
+  # Status text
   output$format_check <- renderText({
     req(filtered_data())
     
+    area_text <- if (is.null(input$sampling_filter) || length(input$sampling_filter) == 0) {
+      "All areas"
+    } else {
+      paste(input$sampling_filter, collapse = ", ")
+    }
+    
+    species_text <- if (is.null(input$species_filter) || length(input$species_filter) == 0) {
+      "All species"
+    } else {
+      paste(input$species_filter, collapse = ", ")
+    }
+    
     paste(
       "File accepted.",
-      "| Sampling area filter:", input$sampling_filter,
-      "| Species filter:", input$species_filter,
+      "| Sampling area(s):", area_text,
+      "| Species:", species_text,
       "| Rows in current selection:", nrow(filtered_data()),
       "| Number of prey columns:", ncol(filtered_data()) - 3
     )
