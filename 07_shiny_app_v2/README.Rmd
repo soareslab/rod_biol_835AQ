@@ -18,3 +18,14 @@ Column 2 = unique ID
 Column 3 = species
 
 Columns 4 onward = prey volumes between 0 and 1** (Accounting for 100%) This rule is set now, but further investigation is needed to determine if the prey volumes are indeed between 0 and 1, or if they represent counts or other measurements.
+
+Validation logic
+The most useful rule set is:
+
+The file must be a .csv.
+
+It must have at least 4 columns.
+
+The first three columns must be in the required order.
+
+Columns 4 onward must be numeric prey-volume columns.
