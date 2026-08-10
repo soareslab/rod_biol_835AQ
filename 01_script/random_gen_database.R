@@ -1,5 +1,5 @@
 #### this script generates a random database of fish species and their prey volumes for testing purposes.
-function(auto_gen_fish_data) {
+auto_gen_fish_data <- function(auto_gen_fish_data) {
 set.seed(123) # for reproducibility
 
 # Number of fish sampled
