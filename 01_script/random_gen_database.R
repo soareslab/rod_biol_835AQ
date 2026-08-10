@@ -31,20 +31,15 @@ fish_data <- data.frame(
   stringsAsFactors = FALSE
 )
 
-# Add prey-volume columns with values between 0.01 and 1.00
+# Add prey-volume columns with values between 0.01 and 1.00 with the probability of 0.35 of being zero (absence of prey item)
 for (i in 1:n_prey) 
-  fish_data[[paste0("prey_", i)]] <- round(runif(n_fish, min = 0.01, max = 1.00), 2)
+  fish_data[[paste0("prey_", i)]] <- ifelse(
+    runif(n_fish) < 0.35,
+    0,
+    round(runif(n_fish, 0.01, 1.00), 2)
+  )
 
-
-# Add some zeros to simulate absence of prey items (35% chance of being zero)
-fish_data[[paste0("prey_", i)]] <- ifelse(
-  runif(n_fish) < 0.35,
-  0,
-  round(runif(n_fish, min = 0.01, max = 1.00), 2)
-)
 
 # save the generated data to a CSV file 
 write.csv(fish_data, "02_rawdata/generated_fish_data.csv", row.names = FALSE)
-
 }
-
