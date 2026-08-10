@@ -7,7 +7,7 @@ source("01_script/functions.R")
 
 fish_data <- read.csv("02_rawdata/random_gen - Copy.csv", header = TRUE, stringsAsFactors = FALSE)
 
-fish_occurrence <- fo_by_population(diet = fish_data)
+freq_occurrence <- fo_by_population(diet = fish_data)
 
 
 # END OF THE SCRIPT
