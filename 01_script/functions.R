@@ -1,6 +1,4 @@
-fo_by_population <- function(diet) {
-  
-  meta_cols <- names(diet)[1:3]
+fo_summary <- function(diet, group_vars) {
   
   prey_cols <- names(diet)[-(1:3)]
   
@@ -33,28 +31,14 @@ fo_by_population <- function(diet) {
     diet_occurrence_nonempty <- diet_occurrence
   }
   
-  freq_occ_by_population <- diet_occurrence_nonempty %>%
-    dplyr::group_by(species, sampling_area, prey_item) %>%
+  freq_occ <- diet_occurrence_nonempty %>%
+    dplyr::group_by(dplyr::across(dplyr::all_of(c(group_vars, "prey_item")))) %>%
     dplyr::summarise(
       stomachs_with_prey = sum(present, na.rm = TRUE),
       total_stomachs = dplyr::n_distinct(unique_id),
-      frequency_occurrence =
-        (stomachs_with_prey / total_stomachs) * 100,
+      frequency_occurrence = (stomachs_with_prey / total_stomachs) * 100,
       .groups = "drop"
-    ) %>%
-    dplyr::arrange(
-      species,
-      sampling_area,
-      dplyr::desc(frequency_occurrence)
     )
   
-  dir.create("04_output", showWarnings = FALSE, recursive = TRUE)
-  
-  utils::write.csv(
-    freq_occ_by_population,
-    "04_output/frequency_occurrence_by_species_sampling_area.csv",
-    row.names = FALSE
-  )
-  
-  return(freq_occ_by_population)
+  return(freq_occ)
 }
