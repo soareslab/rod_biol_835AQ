@@ -6,7 +6,7 @@
 
 
 
-Hello, this is a simple README file for the biol_835AQ project.
+~~ Hello, this is a simple README file for the biol_835AQ project.
 
 A validation rule will be implemented to ensure data quality and consistency. A validation rule such as:
 
@@ -56,6 +56,6 @@ The prey-category columns are stored as numeric values, with many zeros indicati
 
 For this reason, analyses should distinguish among three situations: observed absence (0), measured positive values (>0), and missing data (NA). Treating NA as zero would likely bias summaries of diet composition.
 
-PS: I know that every script kinda does the cleaning part again, this is a feature not a defect, I just wanted to make sure that the data is clean and ready for analysis, and that the scripts are self-contained and can be run independently, with the goal of exporting it as a shiny app in the future. I also wanted to make sure that the data is clean and ready for analysis, and that the scripts are self-contained and can be run independently, with the goal of exporting it as a shiny app at the end. 
+PS: I know that every script kinda does the cleaning part again, this is a feature not a defect, I just wanted to make sure that the data is clean and ready for analysis, and that the scripts are self-contained and can be run independently, with the goal of exporting it as a shiny app in the future. I also wanted to make sure that the data is clean and ready for analysis, and that the scripts are self-contained and can be run independently, with the goal of exporting it as a shiny app at the end. ~~
 
 Thnak you.
