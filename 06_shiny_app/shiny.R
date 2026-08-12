@@ -1,21 +1,5 @@
-####################################################################################
-## _______  _____  _____  ______    _______  _______    __      _______  _______ ##
-##|       ||     ||  _  ||    _ |  |       ||       |  |  |    |   _   ||  _    |##
-##|  _____|| _   || |_| ||   | ||  |    ___||  _____|  |  |    |  |_|  || |_|   |##
-##| |_____ || |  ||     ||   |_||_ |   |___ | |_____   |  |    |       ||       |##
-##|_____  |||_|  ||     ||    __  ||    ___||_____  |  |  |___ |       ||  _   | ##
-## _____| ||     ||  _  ||   |  | ||   |___  _____| |  |      ||   _   || |_|   |##
-##|_______||_____||_| |_||___|  |_||_______||_______|  |______||__| |__||_______|##
-##|                                                                              ##
-###################################################################################
 ## Author: Rodrigo Martin de Oliveira
-## Description: This script calculates volume percentage for the BIOL835AQ
-## Source:
 ## Date: 2026-08-07
-## This script has the goal of creating a Shiny app that allows users to upload a CSV dataset and perform various analyses on it, including frequency of occurrence, volume percentage, and index of alimentary importance (IAi). The app provides an interactive interface for selecting columns and running analyses, as well as downloading the results.
-## This is still a prototype, and the code is still in development, so please be patient and report any bugs or issues you encounter.
-## Please refer to the README file for instructions of how to use this app, and also for the data format that is expected. The app is designed to be flexible and work with different datasets, but it is important to follow the expected format for the analyses to work correctly.
-## Please every first time that to run this script please run the renv::restore() to install the packages used in this script, nd off course run the it to initialize the renv environment.
 
 #renv::init()
 #renv::snapshot()
