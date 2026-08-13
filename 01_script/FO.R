@@ -9,9 +9,15 @@ source("01_script/functions.R")
 
 fish_data <- read.csv("02_rawdata/generated_fish_data.csv", header = TRUE, stringsAsFactors = FALSE)
 
-#### cleaning and validation step #####
+#### Validate and return issues in the data, continue if no issues ####
+#fish_data <- validate_diet_data(fish_data)
 
+#### cleaning step #####
 fish_data <- clean_diet_data(fish_data)
+
+#### Validate again to show that the cleaning step worked ####
+#fish_data <- validate_diet_data(fish_data)
+
 
 #### here you can select the variables you want to use in the analysis #####
 
