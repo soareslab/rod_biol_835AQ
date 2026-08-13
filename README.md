@@ -12,6 +12,8 @@ Guidelines, to be able to use this tool, your dataset should de structured in a 
 5) species_name
 6 and on) diet_items represented in volume
 
+#### Example of a dataset structure: 
+
 | sampling_area | season | unique_id | sex | species_name | diet_item_1 | diet_item_2 |
 |---------------|--------|-----------|-----|--------------|-------------|-------------|
 | Area_1 | Spring | 001 | M | Geophagus_brasiliensis | 10 | 5 |
