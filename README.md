@@ -4,6 +4,16 @@
 
 
 ### Project Overview
+Guidelines, to be able to use this tool, your dataset should de structured in a way that the first 6 columns are the following:
+1) sampling_area
+2) season
+3) unique_id
+4) sex
+5) species_name
+6 and on) diet_items represented in volume
+
+
+
 The develop of this script and functions comes from the need of easing the process of fish diet data analysis.
 When working with fish diet data, researchers often face challenges in organizing and analyzing the information effectively. This project aims to provide a streamlined approach to handling such data, making the analysis more efficient and accessible.
 We come from the understanding that scientists often deal with large datasets, and manually processing this information can be time-consuming and error-prone. By automating certain aspects of the analysis, we hope to save researchers valuable time and reduce the likelihood of mistakes.
