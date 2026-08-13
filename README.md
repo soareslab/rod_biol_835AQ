@@ -12,6 +12,28 @@ Guidelines, to be able to use this tool, your dataset should de structured in a 
 5) species_name
 6 and on) diet_items represented in volume
 
+| sampling_area | season | unique_id | sex | species_name | diet_item_1 | diet_item_2 |
+|---------------|--------|-----------|-----|--------------|-------------|-------------|
+| :Area_1: | :Spring: | :001: | :M: | :Geophagus_brasiliensis: | :10: | :5: |
+| :Area_1: | :Spring: | :002: | :F: | :Astyanax_fasciatus: | :8: | :12: |
+| :Area_2: | :Summer: | :003: | :M: | :Prochilodus_lineatus: | :15: | :7: |
+| :Area_2: | :Summer: | :004: | :F: | :Geophagus_brasiliensis: | :6: | :9: |
+| :Area_3: | :Fall: | :005: | :M: | :Astyanax_fasciatus: | :12: | :4: |
+| :Area_3: | :Fall: | :006: | :F: | :Prochilodus_lineatus: | :9: | :11: |
+
+### Logic of the script:
+Four functions plus one wrapper:
+
+validate_diet_data() returns a validation report, not just pass/fail.
+
+clean_diet_data() returns cleaned data plus a cleaning log.
+
+fo_summary() performs only the analysis.
+
+run_diet_pipeline() orchestrates the steps and returns everything in one object.
+
+Optionally, print_diet_report() or summarize_diet_report() gives a human-readable summary.
+
 
 
 The develop of this script and functions comes from the need of easing the process of fish diet data analysis.
