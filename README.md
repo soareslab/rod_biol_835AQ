@@ -14,12 +14,12 @@ Guidelines, to be able to use this tool, your dataset should de structured in a 
 
 | sampling_area | season | unique_id | sex | species_name | diet_item_1 | diet_item_2 |
 |---------------|--------|-----------|-----|--------------|-------------|-------------|
-| :Area_1: | :Spring: | :001: | :M: | :Geophagus_brasiliensis: | :10: | :5: |
-| :Area_1: | :Spring: | :002: | :F: | :Astyanax_fasciatus: | :8: | :12: |
-| :Area_2: | :Summer: | :003: | :M: | :Prochilodus_lineatus: | :15: | :7: |
-| :Area_2: | :Summer: | :004: | :F: | :Geophagus_brasiliensis: | :6: | :9: |
-| :Area_3: | :Fall: | :005: | :M: | :Astyanax_fasciatus: | :12: | :4: |
-| :Area_3: | :Fall: | :006: | :F: | :Prochilodus_lineatus: | :9: | :11: |
+| Area_1 | Spring | 001 | M | Geophagus_brasiliensis | 10 | 5 |
+| Area_1 | Spring | 002 | F | Astyanax_fasciatus | 8 | 12 |
+| Area_2 | Summer | 003 | M | Prochilodus_lineatus | 15 | 7 |
+| Area_2 | Summer | 004 | F | Geophagus_brasiliensis | 6 | 9 |
+| Area_3 | Fall | 005 | M | Astyanax_fasciatus | 12 | 4 |
+| Area_3 | Fall | 006 | F | Prochilodus_lineatus | 9 | 11 |
 
 ### Logic of the script:
 Four functions plus one wrapper:
