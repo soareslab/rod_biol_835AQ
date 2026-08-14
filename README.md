@@ -37,7 +37,7 @@ fo_summary() performs only the analysis.
 
 run_diet_pipeline() orchestrates the steps and returns everything in one object.
 
-Optionally, print_diet_report() or summarize_diet_report() gives a human-readable summary.
+Optionally, print_diet_report() or summarize_diet_report() gives readable summary.
 
 
 

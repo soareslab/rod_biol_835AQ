@@ -6,7 +6,7 @@ fo_summary <- function(
 ) {
   
   meta_cols <- c("sampling_area", "unique_id", "species")
-  
+  # validation
   missing_meta <- setdiff(meta_cols, names(diet))
   if (length(missing_meta) > 0) {
     stop(
@@ -14,7 +14,7 @@ fo_summary <- function(
       paste(missing_meta, collapse = ", ")
     )
   }
-  
+  # validation
   missing_groups <- setdiff(group_vars, names(diet))
   if (length(missing_groups) > 0) {
     stop(
@@ -22,7 +22,7 @@ fo_summary <- function(
       paste(missing_groups, collapse = ", ")
     )
   }
-  
+  # validation
   prey_cols <- setdiff(names(diet), meta_cols)
   
   if (length(prey_cols) == 0) {
@@ -82,17 +82,17 @@ fo_summary <- function(
 ##### Cleaning data and validation function 
 
 clean_diet_data <- function(diet) {
-    
+    # validation
     if (!is.data.frame(diet)) {
       stop("Input 'diet' must be a data frame.")
     }
     
     diet <- diet %>%
       janitor::clean_names()
-    
+    # validation
     required_cols <- c("sampling_area", "unique_id", "species")
     missing_cols <- setdiff(required_cols, names(diet))
-    
+    # fail if any required columns are missing
     if (length(missing_cols) > 0) {
       stop(
         "Missing required columns: ",
@@ -102,7 +102,7 @@ clean_diet_data <- function(diet) {
     
     meta_cols <- required_cols
     prey_cols <- setdiff(names(diet), meta_cols)
-    
+    # fail if no prey columns are found
     if (length(prey_cols) == 0) {
       stop("No prey columns were found in the dataset.")
     }
