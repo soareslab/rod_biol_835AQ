@@ -8,6 +8,12 @@ n_fish <- 800
 # Four sampling areas
 sampling_areas <- c("Area_1", "Area_2", "Area_3", "Area_4")
 
+# Example seasons
+seasons_list <- c("Spring", "Summer", "Autumn", "Winter")
+
+# Example sex
+sex_list <- c("M", "F")
+
 # Example fish species names
 species_list <- c(
   "Astyanax_fasciatus",
@@ -26,6 +32,8 @@ n_prey <- 60
 # Create main columns
 fish_data <- data.frame(
   sampling_area = sample(sampling_areas, n_fish, replace = TRUE),
+  season = sample(seasons_list, n_fish, replace = TRUE),
+  sex = sample(sex_list, n_fish, replace = TRUE),
   unique_id = sprintf("F%04d", 1:n_fish),
   species = sample(species_list, n_fish, replace = TRUE),
   stringsAsFactors = FALSE
