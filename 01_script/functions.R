@@ -333,6 +333,84 @@ clean_diet_data <- function(diet) {
   )
 }
 
+#### Filter data to subset analysis ####
+
+filter_diet_data <- function(diet, filters = list()) {
+  
+  if (!is.data.frame(diet)) {
+    stop("Input 'diet' must be a data frame.")
+  }
+  
+  filtered_data <- diet
+  
+  if (length(filters) == 0) {
+    return(filtered_data)
+  }
+  
+  for (nm in names(filters)) {
+    
+    if (!nm %in% names(filtered_data)) {
+      stop("Filter column not found in dataset: ", nm)
+    }
+    
+    values <- filters[[nm]]
+    
+    if (!is.null(values) && length(values) > 0) {
+      filtered_data <- filtered_data %>%
+        dplyr::filter(.data[[nm]] %in% values)
+    }
+  }
+  
+  filtered_data
+}
+
+run_one_scenario <- function(diet, scenario_name, filters = list(), group_vars = NULL) {
+  
+  diet_subset <- filter_diet_data(diet, filters = filters)
+  
+  if (nrow(diet_subset) == 0) {
+    stop("Scenario '", scenario_name, "' returned zero rows after filtering.")
+  }
+  
+  list(
+    scenario_name = scenario_name,
+    filters = filters,
+    group_vars = group_vars,
+    n_rows = nrow(diet_subset),
+    n_stomachs = dplyr::n_distinct(diet_subset$unique_id),
+    filtered_data = diet_subset,
+    fo = fo_summary(diet_subset, group_vars = group_vars),
+    volume = volume_summary(diet_subset, group_vars = group_vars),
+    iai = iai_summary(diet_subset, group_vars = group_vars),
+    combined = diet_indices_summary(diet_subset, group_vars = group_vars)
+  )
+}
+
+run_comparison_scenarios <- function(diet, scenarios) {
+  
+  if (!is.list(scenarios) || length(scenarios) == 0) {
+    stop("'scenarios' must be a non-empty list.")
+  }
+  
+  results <- list()
+  
+  for (nm in names(scenarios)) {
+    
+    sc <- scenarios[[nm]]
+    
+    filters <- sc$filters
+    group_vars <- sc$group_vars
+    
+    results[[nm]] <- run_one_scenario(
+      diet = diet,
+      scenario_name = nm,
+      filters = filters,
+      group_vars = group_vars
+    )
+  }
+  
+  results
+}
 
 #### Frequency of occurrence summary ####
 

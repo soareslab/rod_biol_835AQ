@@ -22,7 +22,13 @@ clean_log <- clean_result$log
 #### Validate using clean_data to show that the cleaning step worked ####
 validate_diet_data(clean_data)
 
-#### For Diet summary group option ####
+### Create the list of filter ####
+
+
+#### Run the filter option ####
+
+
+#### For Diet summary options ####
 
 combined_overall <- diet_indices_summary(clean_data)
 diet_indices_summary(clean_data, group_vars = "species")
@@ -30,7 +36,7 @@ diet_indices_summary(clean_data, group_vars = "sampling_area")
 diet_indices_summary(clean_data, group_vars = "season")
 diet_indices_summary(clean_data, group_vars = "sex")
 
-#### Frequency of Occurrence group options #####
+#### Frequency of Occurrence options #####
 
 fo_summary(clean_data)
 fo_summary(clean_data, group_vars = "species")
@@ -38,7 +44,7 @@ fo_summary(clean_data, group_vars = "sampling_area")
 fo_summary(clean_data, group_vars = "season")
 fo_summary(clean_data, group_vars = "sex")
 
-#### Volume% calculation group option ####
+#### Volume% calculation option ####
 
 volume_summary(clean_data)
 volume_summary(clean_data, group_vars = "species")
@@ -46,7 +52,7 @@ volume_summary(clean_data, group_vars = "sampling_area")
 volume_summary(clean_data, group_vars = "season")
 volume_summary(clean_data, group_vars = "sex")
 
-#### IAi analysis group option ####
+#### IAi analysis option ####
 
 iai_summary(clean_data)
 iai_summary(clean_data, group_vars = "species")
@@ -56,7 +62,8 @@ iai_summary(clean_data, group_vars = "sex")
 
 #### to run the whole pipe line ####
 
-pipeline_result <- run_diet_pipeline(fish_data_raw)
+pipeline_result <- run_diet_pipeline(filters)
+pipeline_result <- run_diet_pipeline(clean_data)
 
 #### to check the columns from pipeline_results
 
