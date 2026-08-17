@@ -411,6 +411,143 @@ fo_summary <- function(diet, group_vars = NULL) {
   freq_occ
 }
 
+#### Volume percentage ####
+
+volume_summary <- function(diet, group_vars = NULL) {
+  
+  if (!is.data.frame(diet)) {
+    stop("Input 'diet' must be a data frame.")
+  }
+  
+  required_cols <- c("unique_id")
+  optional_meta_cols <- c("sampling_area", "species", "season", "sex")
+  known_meta_cols <- c(required_cols, optional_meta_cols)
+  
+  missing_required <- setdiff(required_cols, names(diet))
+  if (length(missing_required) > 0) {
+    stop(
+      "Missing required columns: ",
+      paste(missing_required, collapse = ", ")
+    )
+  }
+  
+  if (!is.null(group_vars)) {
+    missing_groups <- setdiff(group_vars, names(diet))
+    if (length(missing_groups) > 0) {
+      stop(
+        "Invalid grouping columns: ",
+        paste(missing_groups, collapse = ", ")
+      )
+    }
+  }
+  
+  prey_cols <- setdiff(names(diet), known_meta_cols)
+  
+  if (length(prey_cols) == 0) {
+    stop("No prey columns were found in the dataset.")
+  }
+  
+  diet_long <- diet %>%
+    tidyr::pivot_longer(
+      cols = tidyselect::all_of(prey_cols),
+      names_to = "prey_item",
+      values_to = "volume"
+    ) %>%
+    dplyr::mutate(
+      volume = as.numeric(volume)
+    )
+  
+  summary_groups <- c(group_vars, "prey_item")
+  total_groups <- group_vars
+  
+  prey_volume <- diet_long %>%
+    dplyr::summarise(
+      total_volume_item = sum(volume, na.rm = TRUE),
+      .by = tidyselect::all_of(summary_groups)
+    )
+  
+  if (is.null(group_vars)) {
+    total_volume <- sum(prey_volume$total_volume_item, na.rm = TRUE)
+    
+    vol_pct <- prey_volume %>%
+      dplyr::mutate(
+        total_volume_all = total_volume,
+        volume_percentage = dplyr::if_else(
+          total_volume_all > 0,
+          (total_volume_item / total_volume_all) * 100,
+          NA_real_
+        )
+      ) %>%
+      dplyr::select(prey_item, total_volume_item, total_volume_all, volume_percentage)
+  } else {
+    total_volume_by_group <- diet_long %>%
+      dplyr::summarise(
+        total_volume_all = sum(volume, na.rm = TRUE),
+        .by = tidyselect::all_of(total_groups)
+      )
+    
+    vol_pct <- prey_volume %>%
+      dplyr::left_join(total_volume_by_group, by = group_vars) %>%
+      dplyr::mutate(
+        volume_percentage = dplyr::if_else(
+          total_volume_all > 0,
+          (total_volume_item / total_volume_all) * 100,
+          NA_real_
+        )
+      )
+  }
+  
+  vol_pct
+}
+
+#### Alimentary Index ####
+
+iai_summary <- function(diet, group_vars = NULL) {
+  
+  fo <- fo_summary(diet, group_vars = group_vars)
+  vol <- volume_summary(diet, group_vars = group_vars)
+  
+  join_cols <- c(group_vars, "prey_item")
+  
+  iai_base <- fo %>%
+    dplyr::left_join(vol, by = join_cols) %>%
+    dplyr::mutate(
+      fo_x_v = frequency_occurrence * volume_percentage
+    )
+  
+  if (is.null(group_vars)) {
+    
+    total_fo_x_v <- sum(iai_base$fo_x_v, na.rm = TRUE)
+    
+    if (total_fo_x_v > 0) {
+      iai <- iai_base %>%
+        dplyr::mutate(
+          iai = (fo_x_v / total_fo_x_v) * 100
+        )
+    } else {
+      iai <- iai_base %>%
+        dplyr::mutate(
+          iai = NA_real_
+        )
+    }
+    
+  } else {
+    
+    iai <- iai_base %>%
+      dplyr::mutate(
+        total_fo_x_v = sum(fo_x_v, na.rm = TRUE),
+        .by = tidyselect::all_of(group_vars)
+      ) %>%
+      dplyr::mutate(
+        iai = dplyr::case_when(
+          total_fo_x_v > 0 ~ (fo_x_v / total_fo_x_v) * 100,
+          TRUE ~ NA_real_
+        )
+      )
+  }
+  
+  iai
+}
 
 #### Run full pipeline ####
 
@@ -434,20 +571,36 @@ run_diet_pipeline <- function(
   
   validation_after <- validate_diet_data(diet_clean)
   
-  analysis <- list()
+  analysis <- list(
+    fo = list(),
+    volume = list(),
+    iai = list()
+  )
   
   for (nm in names(analysis_groups)) {
     current_groups <- analysis_groups[[nm]]
     
     if (all(current_groups %in% names(diet_clean))) {
-      analysis[[nm]] <- fo_summary(
+      analysis$fo[[nm]] <- fo_summary(
+        diet_clean,
+        group_vars = current_groups
+      )
+      
+      analysis$volume[[nm]] <- volume_summary(
+        diet_clean,
+        group_vars = current_groups
+      )
+      
+      analysis$iai[[nm]] <- iai_summary(
         diet_clean,
         group_vars = current_groups
       )
     }
   }
   
-  analysis[["overall"]] <- fo_summary(diet_clean, group_vars = NULL)
+  analysis$fo[["overall"]] <- fo_summary(diet_clean, group_vars = NULL)
+  analysis$volume[["overall"]] <- volume_summary(diet_clean, group_vars = NULL)
+  analysis$iai[["overall"]] <- iai_summary(diet_clean, group_vars = NULL)
   
   list(
     raw_data = diet,
