@@ -512,17 +512,17 @@ iai_summary <- function(diet, group_vars = NULL) {
   iai_base <- fo %>%
     dplyr::left_join(vol, by = join_cols) %>%
     dplyr::mutate(
-      fo_x_v = frequency_occurrence * volume_percentage
+      fo_times_v = frequency_occurrence * volume_percentage
     )
   
   if (is.null(group_vars)) {
     
-    total_fo_x_v <- sum(iai_base$fo_x_v, na.rm = TRUE)
+    total_fo_times_v <- sum(iai_base$fo_times_v, na.rm = TRUE)
     
-    if (total_fo_x_v > 0) {
+    if (total_fo_times_v > 0) {
       iai <- iai_base %>%
         dplyr::mutate(
-          iai = (fo_x_v / total_fo_x_v) * 100
+          iai = (fo_times_v / total_fo_times_v) * 100
         )
     } else {
       iai <- iai_base %>%
@@ -535,12 +535,12 @@ iai_summary <- function(diet, group_vars = NULL) {
     
     iai <- iai_base %>%
       dplyr::mutate(
-        total_fo_x_v = sum(fo_x_v, na.rm = TRUE),
+        total_fo_times_v = sum(fo_times_v, na.rm = TRUE),
         .by = tidyselect::all_of(group_vars)
       ) %>%
       dplyr::mutate(
         iai = dplyr::case_when(
-          total_fo_x_v > 0 ~ (fo_x_v / total_fo_x_v) * 100,
+          total_fo_times_v > 0 ~ (fo_times_v / total_fo_times_v) * 100,
           TRUE ~ NA_real_
         )
       )
@@ -566,7 +566,7 @@ diet_indices_summary <- function(diet, group_vars = NULL) {
   iai <- iai_summary(diet, group_vars = group_vars) %>%
     dplyr::select(
       tidyselect::all_of(c(group_vars, "prey_item")),
-      fo_x_v,
+      fo_times_v,
       iai
     )
   
@@ -645,6 +645,7 @@ run_diet_pipeline <- function(
   analysis$fo[["overall"]] <- fo_summary(diet_clean, group_vars = NULL)
   analysis$volume[["overall"]] <- volume_summary(diet_clean, group_vars = NULL)
   analysis$iai[["overall"]] <- iai_summary(diet_clean, group_vars = NULL)
+  analysis$combined[["overall"]] <- diet_indices_summary(diet_clean, group_vars = NULL)
   
   list(
     raw_data = diet,
