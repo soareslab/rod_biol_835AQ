@@ -22,15 +22,46 @@ clean_log <- clean_result$log
 #### Validate again to show that the cleaning step worked ####
 validate_diet_data(clean_data)
 
-#### here you can select the variables you want to use in the analysis #####
-# for frequency of occence
+#### for Diet summary ####
 
+diet_indices_summary(clean_data)
+diet_indices_summary(clean_data, group_vars = "species")
+diet_indices_summary(clean_data, group_vars = "sampling_area")
+diet_indices_summary(clean_data, group_vars = "season")
+diet_indices_summary(clean_data, group_vars = "sex")
+
+#### for Frequency of Occurence here you can select the variables you want to use in the analysis #####
+
+fo_summary(clean_data)
 fo_summary(clean_data, group_vars = "species")
 fo_summary(clean_data, group_vars = "sampling_area")
 fo_summary(clean_data, group_vars = "season")
+fo_summary(clean_data, group_vars = "sex")
+
+#### for Volume% options ####
+
+volume_summary(clean_data)
+volume_summary(clean_data, group_vars = "species")
+volume_summary(clean_data, group_vars = "sampling_area")
+volume_summary(clean_data, group_vars = "season")
+volume_summary(clean_data, group_vars = "sex")
+
+#### for IAi options ####
+
+iai_summary(clean_data)
+iai_summary(clean_data, group_vars = "species")
+iai_summary(clean_data, group_vars = "sampling_area")
+iai_summary(clean_data, group_vars = "season")
+iai_summary(clean_data, group_vars = "sex")
 
 #### to run the whole pipe line ####
 
-pipeline_result <- run_diet_pipeline(fish_data_raw)
+pipeline_result <- run_diet_pipeline(clean_data)
+
+#### to check the columns from pipeline_results
+
+pipeline_result$analysis$iai
+pipeline_result$analysis$volume
+pipeline_result$analysis$fo
 
 #### END OF THE SCRIPT #####

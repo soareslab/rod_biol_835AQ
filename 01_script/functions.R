@@ -549,6 +549,50 @@ iai_summary <- function(diet, group_vars = NULL) {
   iai
 }
 
+#### Diet indexes summary ####
+
+diet_indices_summary <- function(diet, group_vars = NULL) {
+  
+  fo <- fo_summary(diet, group_vars = group_vars)
+  
+  vol <- volume_summary(diet, group_vars = group_vars) %>%
+    dplyr::select(
+      tidyselect::all_of(c(group_vars, "prey_item")),
+      total_volume_item,
+      total_volume_all,
+      volume_percentage
+    )
+  
+  iai <- iai_summary(diet, group_vars = group_vars) %>%
+    dplyr::select(
+      tidyselect::all_of(c(group_vars, "prey_item")),
+      fo_x_v,
+      iai
+    )
+  
+  join_cols <- c(group_vars, "prey_item")
+  
+  combined <- fo %>%
+    dplyr::left_join(vol, by = join_cols) %>%
+    dplyr::left_join(iai, by = join_cols)
+  
+  if (is.null(group_vars)) {
+    combined <- combined %>%
+      dplyr::arrange(dplyr::desc(iai), prey_item)
+  } else {
+    combined <- combined %>%
+      dplyr::arrange(
+        dplyr::across(tidyselect::all_of(group_vars)),
+        dplyr::desc(iai),
+        prey_item
+      )
+  }
+  
+  combined
+}
+
+
+
 #### Run full pipeline ####
 
 run_diet_pipeline <- function(
