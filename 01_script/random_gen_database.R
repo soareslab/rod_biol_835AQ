@@ -6,13 +6,13 @@ set.seed(123) # for reproducibility
 n_fish <- 800
 
 # Four sampling areas
-sampling_areas <- c("Area_1", "Area_2", "Area_3", "Area_4")
+sampling_areas <- c("Area_01", "Area_02", "Area_03", "Area_04")
 
 # Example seasons
 seasons_list <- c("Spring", "Summer", "Autumn", "Winter")
 
 # Example sex
-sex_list <- c("M", "F")
+sex_list <- c("M", "F") 
 
 # Example fish species names
 species_list <- c(
