@@ -57,7 +57,7 @@ iai_summary(clean_data, group_vars = "season")
 iai_summary(clean_data, group_vars = "sex")
 
 #### to run the whole pipe line ####
-pipeline_result <- run_diet_pipeline(filters)
+#pipeline_result <- run_diet_pipeline(filters)
 pipeline_result <- run_diet_pipeline(clean_data)
 
 #### to check the columns from pipeline_results
