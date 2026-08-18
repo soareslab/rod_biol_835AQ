@@ -333,36 +333,169 @@ clean_diet_data <- function(diet) {
   )
 }
 
-#### Filter data to subset analysis ####
+#### Loop to run every possible combination ####
 
-filter_diet_data <- function(diet, filters = list()) {
+run_all_observed_scenarios <- function(
+    clean_data,
+    combo_vars = c("sampling_area", "season", "sex", "species"),
+    include_filtered_data = FALSE
+) {
+  
+  if (!is.data.frame(clean_data)) {
+    stop("'clean_data' must be a data frame.")
+  }
+  
+  missing_vars <- setdiff(combo_vars, names(clean_data))
+  
+  if (length(missing_vars) > 0) {
+    stop(
+      "These scenario columns are missing: ",
+      paste(missing_vars, collapse = ", ")
+    )
+  }
+  
+  if (!"unique_id" %in% names(clean_data)) {
+    stop("The dataset must contain a 'unique_id' column.")
+  }
+  
+  scenario_table <- clean_data %>%
+    dplyr::distinct(dplyr::across(dplyr::all_of(combo_vars))) %>%
+    dplyr::arrange(dplyr::across(dplyr::all_of(combo_vars)))
+  
+  scenario_results <- vector("list", nrow(scenario_table))
+  
+  scenario_names <- character(nrow(scenario_table))
+  
+  for (i in seq_len(nrow(scenario_table))) {
+    
+    current_scenario <- scenario_table[i, ]
+    
+    scenario_values <- vapply(
+      combo_vars,
+      function(var) {
+        value <- current_scenario[[var]][[1]]
+        
+        if (is.na(value)) {
+          "NA"
+        } else {
+          as.character(value)
+        }
+      },
+      character(1)
+    )
+    
+    scenario_name <- paste(
+      paste(combo_vars, scenario_values, sep = "="),
+      collapse = "__"
+    )
+    
+    scenario_name <- gsub(
+      "[^[:alnum:]_=-]+",
+      "_",
+      scenario_name
+    )
+    
+    scenario_names[i] <- scenario_name
+    
+    filtered_data <- clean_data
+    
+    for (var in combo_vars) {
+      
+      scenario_value <- current_scenario[[var]][[1]]
+      
+      if (is.na(scenario_value)) {
+        filtered_data <- filtered_data %>%
+          dplyr::filter(is.na(.data[[var]]))
+      } else {
+        filtered_data <- filtered_data %>%
+          dplyr::filter(.data[[var]] == scenario_value)
+      }
+    }
+    
+    result <- list(
+      metadata = current_scenario,
+      n_rows = nrow(filtered_data),
+      n_stomachs = dplyr::n_distinct(filtered_data$unique_id),
+      fo = fo_summary(
+        filtered_data,
+        group_vars = NULL
+      ),
+      volume = volume_summary(
+        filtered_data,
+        group_vars = NULL
+      ),
+      iai = iai_summary(
+        filtered_data,
+        group_vars = NULL
+      ),
+      combined = diet_indices_summary(
+        filtered_data,
+        group_vars = NULL
+      )
+    )
+    
+    if (include_filtered_data) {
+      result$filtered_data <- filtered_data
+    }
+    
+    scenario_results[[i]] <- result
+  }
+  
+  scenario_names <- make.unique(scenario_names)
+  
+  names(scenario_results) <- scenario_names
+  
+  list(
+    scenario_table = scenario_table,
+    results = scenario_results
+  )
+}
+
+#### Loop to analyse different scenarios ####
+
+run_comparison_scenarios <- function(diet, comparison_scenarios) {
   
   if (!is.data.frame(diet)) {
-    stop("Input 'diet' must be a data frame.")
+    stop("'diet' must be a data frame.")
   }
   
-  filtered_data <- diet
-  
-  if (length(filters) == 0) {
-    return(filtered_data)
+  if (!is.list(comparison_scenarios) || length(comparison_scenarios) == 0) {
+    stop("'comparison_scenarios' must be a non-empty list.")
   }
   
-  for (nm in names(filters)) {
+  scenario_results <- vector("list", length(comparison_scenarios))
+  names(scenario_results) <- names(comparison_scenarios)
+  
+  for (nm in names(comparison_scenarios)) {
     
-    if (!nm %in% names(filtered_data)) {
-      stop("Filter column not found in dataset: ", nm)
+    cat("Running scenario:", nm, "\n")
+    
+    sc <- comparison_scenarios[[nm]]
+    
+    if (is.null(sc$filters)) {
+      sc$filters <- list()
     }
     
-    values <- filters[[nm]]
-    
-    if (!is.null(values) && length(values) > 0) {
-      filtered_data <- filtered_data %>%
-        dplyr::filter(.data[[nm]] %in% values)
-    }
+    scenario_results[[nm]] <- tryCatch(
+      run_one_scenario(
+        diet = diet,
+        scenario_name = nm,
+        filters = sc$filters,
+        group_vars = sc$group_vars
+      ),
+      error = function(e) {
+        list(
+          scenario_name = nm,
+          error = conditionMessage(e)
+        )
+      }
+    )
   }
   
-  filtered_data
+  scenario_results
 }
+
+#### Run one scenario
 
 run_one_scenario <- function(diet, scenario_name, filters = list(), group_vars = NULL) {
   
@@ -384,32 +517,6 @@ run_one_scenario <- function(diet, scenario_name, filters = list(), group_vars =
     iai = iai_summary(diet_subset, group_vars = group_vars),
     combined = diet_indices_summary(diet_subset, group_vars = group_vars)
   )
-}
-
-run_comparison_scenarios <- function(diet, scenarios) {
-  
-  if (!is.list(scenarios) || length(scenarios) == 0) {
-    stop("'scenarios' must be a non-empty list.")
-  }
-  
-  results <- list()
-  
-  for (nm in names(scenarios)) {
-    
-    sc <- scenarios[[nm]]
-    
-    filters <- sc$filters
-    group_vars <- sc$group_vars
-    
-    results[[nm]] <- run_one_scenario(
-      diet = diet,
-      scenario_name = nm,
-      filters = filters,
-      group_vars = group_vars
-    )
-  }
-  
-  results
 }
 
 #### Frequency of occurrence summary ####

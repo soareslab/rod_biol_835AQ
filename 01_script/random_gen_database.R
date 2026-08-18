@@ -3,10 +3,10 @@ auto_gen_fish_data <- function(auto_gen_fish_data) {
 set.seed(123) # for reproducibility
 
 # Number of fish sampled
-n_fish <- 800
+n_fish <- 1200
 
 # Four sampling areas
-sampling_areas <- c("Area_01", "Area_02", "Area_03", "Area_04")
+sampling_areas <- c("Area_01", "Area_02", "Area_03", "Area_04", "Area_05", "Area_06", "Area_07", "Area_08")
 
 # Example seasons
 seasons_list <- c("Spring", "Summer", "Autumn", "Winter")

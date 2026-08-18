@@ -65,43 +65,58 @@ pipeline_result$analysis$iai
 pipeline_result$analysis$volume
 pipeline_result$analysis$fo
 
-#### test ####
-
-
-scenario_table <- clean_data %>%
-  dplyr::distinct(sampling_area, season, sex, species)
-
-scenario_results <- list()
-
-for (i in seq_len(nrow(scenario_table))) {
-  
-  current_scenario <- scenario_table[i, ]
-  
-  scenario_name <- paste(
-    current_scenario$sampling_area,
-    current_scenario$season,
-    current_scenario$sex,
-    current_scenario$species,
-    sep = "_"
+#### to get the result of every possible scenario combination ####
+all_scenarios <- run_all_observed_scenarios(
+  clean_data = clean_data,
+  combo_vars = c(
+    "sampling_area",
+    "season",
+    "sex",
+    "species"
   )
-  
-  filtered_data <- clean_data %>%
-    dplyr::filter(
-      sampling_area == current_scenario$sampling_area,
-      season == current_scenario$season,
-      sex == current_scenario$sex,
-      species == current_scenario$species
-    )
-  
-  scenario_results[[scenario_name]] <- list(
-    metadata = current_scenario,
-    fo = fo_summary(filtered_data, group_vars = NULL),
-    volume = volume_summary(filtered_data, group_vars = NULL),
-    iai = iai_summary(filtered_data, group_vars = NULL),
-    combined = diet_indices_summary(filtered_data, group_vars = NULL)
-  )
-}
+)
 
-run_all_observed_combinations(diet, combo_vars = c("sampling_area", "season", "sex", "species"))
+combined_all_scenarios <- dplyr::bind_rows(
+  lapply(
+    all_scenarios$results,
+    function(x) x$combined
+  ),
+  .id = "scenario_name"
+)
+
+write.csv(combined_all_scenarios, "04_output/combined_all_scenarios.csv")
+
+#### to select a combination of scenarios ####
+comparison_scenarios <- list(
+  
+  species_only = list(
+    filters = list(
+      season = c("spring", "summer"),
+      species = c("species_a", "species_b")
+    ),
+    group_vars = "species"
+  ),
+  
+  season_only = list(
+    filters = list(
+      season = c("spring", "summer"),
+      species = c("species_a", "species_b")
+    ),
+    group_vars = "season"
+  ),
+  
+  species_by_season = list(
+    filters = list(
+      season = c("spring", "summer"),
+      species = c("species_a", "species_b")
+    ),
+    group_vars = c("species", "season")
+  )
+)
+
+scenario_results <- run_comparison_scenarios(
+  diet = pipeline_result$cleaned_data,
+  comparison_scenarios = comparison_scenarios
+)
 
 #### END OF THE SCRIPT #####
