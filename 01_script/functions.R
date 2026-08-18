@@ -338,32 +338,40 @@ clean_diet_data <- function(diet) {
 run_all_observed_scenarios <- function(
     clean_data,
     combo_vars = c("sampling_area", "season", "sex", "species"),
-    include_filtered_data = FALSE
+    include_filtered_data = FALSE,
+    warn_missing = TRUE
 ) {
   
   if (!is.data.frame(clean_data)) {
     stop("'clean_data' must be a data frame.")
   }
   
-  missing_vars <- setdiff(combo_vars, names(clean_data))
-  
-  if (length(missing_vars) > 0) {
-    stop(
-      "These scenario columns are missing: ",
-      paste(missing_vars, collapse = ", ")
-    )
-  }
-  
   if (!"unique_id" %in% names(clean_data)) {
     stop("The dataset must contain a 'unique_id' column.")
   }
   
+  available_combo_vars <- intersect(combo_vars, names(clean_data))
+  missing_combo_vars <- setdiff(combo_vars, names(clean_data))
+  
+  if (length(available_combo_vars) == 0) {
+    stop(
+      "None of the requested scenario columns were found in the dataset. Requested: ",
+      paste(combo_vars, collapse = ", ")
+    )
+  }
+  
+  if (warn_missing && length(missing_combo_vars) > 0) {
+    warning(
+      "These requested scenario columns were not found and will be ignored: ",
+      paste(missing_combo_vars, collapse = ", ")
+    )
+  }
+  
   scenario_table <- clean_data %>%
-    dplyr::distinct(dplyr::across(dplyr::all_of(combo_vars))) %>%
-    dplyr::arrange(dplyr::across(dplyr::all_of(combo_vars)))
+    dplyr::distinct(dplyr::across(dplyr::all_of(available_combo_vars))) %>%
+    dplyr::arrange(dplyr::across(dplyr::all_of(available_combo_vars)))
   
   scenario_results <- vector("list", nrow(scenario_table))
-  
   scenario_names <- character(nrow(scenario_table))
   
   for (i in seq_len(nrow(scenario_table))) {
@@ -371,7 +379,7 @@ run_all_observed_scenarios <- function(
     current_scenario <- scenario_table[i, ]
     
     scenario_values <- vapply(
-      combo_vars,
+      available_combo_vars,
       function(var) {
         value <- current_scenario[[var]][[1]]
         
@@ -385,7 +393,7 @@ run_all_observed_scenarios <- function(
     )
     
     scenario_name <- paste(
-      paste(combo_vars, scenario_values, sep = "="),
+      paste(available_combo_vars, scenario_values, sep = "="),
       collapse = "__"
     )
     
@@ -399,7 +407,7 @@ run_all_observed_scenarios <- function(
     
     filtered_data <- clean_data
     
-    for (var in combo_vars) {
+    for (var in available_combo_vars) {
       
       scenario_value <- current_scenario[[var]][[1]]
       
@@ -414,6 +422,9 @@ run_all_observed_scenarios <- function(
     
     result <- list(
       metadata = current_scenario,
+      requested_combo_vars = combo_vars,
+      used_combo_vars = available_combo_vars,
+      ignored_combo_vars = missing_combo_vars,
       n_rows = nrow(filtered_data),
       n_stomachs = dplyr::n_distinct(filtered_data$unique_id),
       fo = fo_summary(
@@ -442,10 +453,12 @@ run_all_observed_scenarios <- function(
   }
   
   scenario_names <- make.unique(scenario_names)
-  
   names(scenario_results) <- scenario_names
   
   list(
+    requested_combo_vars = combo_vars,
+    used_combo_vars = available_combo_vars,
+    ignored_combo_vars = missing_combo_vars,
     scenario_table = scenario_table,
     results = scenario_results
   )

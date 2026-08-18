@@ -4,17 +4,17 @@
 
 
 ### Project Overview
-Guidelines, to be able to use this tool, your dataset should de structured in a way that the first 6 columns are the following:
+Guidelines, to be able to use this tool, your dataset should de structured in a way that the data-set that has a least unique_id and "prey items" and up to 6 columns like following:
 1) sampling_area
 2) season
 3) unique_id
 4) sex
 5) species
-6 and on) diet_items represented in volume
+6) and on diet_items represented in volume
 
 #### Example of a dataset structure: 
 
-| sampling_area | season | unique_id | sex | species_name | diet_item_1 | diet_item_2 |
+| sampling_area | season | unique_id | sex | species | diet_item_1 | diet_item_2 |
 |---------------|--------|-----------|-----|--------------|-------------|-------------|
 | Area_1 | Spring | 001 | M | Geophagus_brasiliensis | 10 | 5 |
 | Area_2 | Spring | 002 | F | Astyanax_fasciatus | 8 | 12 |

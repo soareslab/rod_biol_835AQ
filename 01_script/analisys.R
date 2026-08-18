@@ -39,7 +39,6 @@ iai_summary(clean_data)
 
 
 #### to run the whole pipe line ####
-
 pipeline_result <- run_diet_pipeline(clean_data)
 
 #### to check the columns from pipeline_results
@@ -50,10 +49,7 @@ pipeline_result$analysis$fo
 #### to get the result of every possible scenario combination ####
 all_scenarios <- run_all_observed_scenarios(
   clean_data = clean_data,
-  combo_vars = c(
-    "sampling_area",
-    "season",
-    "sex"
+  combo_vars = c("sampling_area","season","sex"
   ) # there is 4 possible options here, sampling_area, season, sex and species
 )
 
