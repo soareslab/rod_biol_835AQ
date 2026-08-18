@@ -6,7 +6,6 @@ library(janitor)
 
 source("01_script/functions.R")
 #### Read the RAW data from the .CSV file ####
-
 fish_data_raw <- read.csv("02_rawdata/generated_fish_data.csv", header = TRUE, stringsAsFactors = FALSE)
 
 #### Validate and return issues in the data, continue if no issues ####
