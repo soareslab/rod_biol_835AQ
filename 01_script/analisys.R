@@ -57,12 +57,51 @@ iai_summary(clean_data, group_vars = "season")
 iai_summary(clean_data, group_vars = "sex")
 
 #### to run the whole pipe line ####
-#pipeline_result <- run_diet_pipeline(filters)
+
 pipeline_result <- run_diet_pipeline(clean_data)
 
 #### to check the columns from pipeline_results
 pipeline_result$analysis$iai
 pipeline_result$analysis$volume
 pipeline_result$analysis$fo
+
+#### test ####
+
+
+scenario_table <- clean_data %>%
+  dplyr::distinct(sampling_area, season, sex, species)
+
+scenario_results <- list()
+
+for (i in seq_len(nrow(scenario_table))) {
+  
+  current_scenario <- scenario_table[i, ]
+  
+  scenario_name <- paste(
+    current_scenario$sampling_area,
+    current_scenario$season,
+    current_scenario$sex,
+    current_scenario$species,
+    sep = "_"
+  )
+  
+  filtered_data <- clean_data %>%
+    dplyr::filter(
+      sampling_area == current_scenario$sampling_area,
+      season == current_scenario$season,
+      sex == current_scenario$sex,
+      species == current_scenario$species
+    )
+  
+  scenario_results[[scenario_name]] <- list(
+    metadata = current_scenario,
+    fo = fo_summary(filtered_data, group_vars = NULL),
+    volume = volume_summary(filtered_data, group_vars = NULL),
+    iai = iai_summary(filtered_data, group_vars = NULL),
+    combined = diet_indices_summary(filtered_data, group_vars = NULL)
+  )
+}
+
+run_all_observed_combinations(diet, combo_vars = c("sampling_area", "season", "sex", "species"))
 
 #### END OF THE SCRIPT #####
