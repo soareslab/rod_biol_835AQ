@@ -53,12 +53,11 @@ all_scenarios <- run_all_observed_scenarios(
   combo_vars = c(
     "sampling_area",
     "season",
-    "sex",
-    "species"
-  )
+    "sex"
+  ) # there is 4 possible options here, sampling_area, season, sex and species
 )
 
-combined_all_scenarios <- dplyr::bind_rows(
+combined_scenarios <- dplyr::bind_rows(
   lapply(
     all_scenarios$results,
     function(x) x$combined
@@ -66,39 +65,6 @@ combined_all_scenarios <- dplyr::bind_rows(
   .id = "scenario_name"
 )
 
-write.csv(combined_all_scenarios, "04_output/combined_all_scenarios.csv")
-
-#### to select a combination of scenarios ####
-comparison_scenarios <- list(
-  
-  species_only = list(
-    filters = list(
-      season = c("spring", "summer"),
-      species = c("species_a", "species_b")
-    ),
-    group_vars = "species"
-  ),
-  
-  season_only = list(
-    filters = list(
-      season = c("spring", "summer"),
-      species = c("species_a", "species_b")
-    ),
-    group_vars = "season"
-  ),
-  
-  species_by_season = list(
-    filters = list(
-      season = c("spring", "summer"),
-      species = c("species_a", "species_b")
-    ),
-    group_vars = c("species", "season")
-  )
-)
-
-scenario_results <- run_comparison_scenarios(
-  diet = pipeline_result$cleaned_data,
-  comparison_scenarios = comparison_scenarios
-)
+write.csv(combined_scenarios, "04_output/combined_scenarios.csv")
 
 #### END OF THE SCRIPT #####
