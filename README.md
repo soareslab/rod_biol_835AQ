@@ -9,7 +9,7 @@ Guidelines, to be able to use this tool, your dataset should de structured in a 
 2) season
 3) unique_id
 4) sex
-5) species_name
+5) species
 6 and on) diet_items represented in volume
 
 #### Example of a dataset structure: 
