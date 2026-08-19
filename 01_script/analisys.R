@@ -48,17 +48,9 @@ pipeline_result$analysis$fo
 #### to get the result of every possible scenario combination ####
 all_scenarios <- run_all_observed_scenarios(
   clean_data = clean_data,
-  combo_vars = c("sampling_area","season","sex"
-  ) # there is 4 possible options here, sampling_area, season, sex and species
-)
+  combo_vars = c("sampling_area","season","sex")) # there is 4 possible options here, sampling_area, season, sex and species
 
-combined_scenarios <- dplyr::bind_rows(
-  lapply(
-    all_scenarios$results,
-    function(x) x$combined
-  ),
-  .id = "scenario_name"
-)
+combined_scenarios <- dplyr::bind_rows(lapply(all_scenarios$results,function(x)x$combined),.id = "scenario_name")
 
 write.csv(combined_scenarios, "04_output/combined_scenarios.csv")
 
