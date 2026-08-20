@@ -14,9 +14,7 @@ validate_diet_data <- function(diet, group_vars = NULL) {
         check = "input_is_data_frame",
         status = "fail",
         details = "Input object is not a data frame.",
-        stringsAsFactors = FALSE
-      )
-    ))
+        stringsAsFactors = FALSE)))
   }
   
   required_cols <- c("unique_id")
@@ -25,10 +23,7 @@ validate_diet_data <- function(diet, group_vars = NULL) {
   
   missing_required <- setdiff(required_cols, names(diet))
   if (length(missing_required) > 0) {
-    issues <- c(
-      issues,
-      paste("Missing required columns:", paste(missing_required, collapse = ", "))
-    )
+    issues <- c(issues,paste("Missing required columns:", paste(missing_required, collapse = ", ")))
   }
   
   if (length(names(diet)) != length(unique(names(diet)))) {
@@ -38,10 +33,7 @@ validate_diet_data <- function(diet, group_vars = NULL) {
   if (!is.null(group_vars)) {
     missing_groups <- setdiff(group_vars, names(diet))
     if (length(missing_groups) > 0) {
-      issues <- c(
-        issues,
-        paste("Requested grouping columns not found:", paste(missing_groups, collapse = ", "))
-      )
+      issues <- c(issues,paste("Requested grouping columns not found:", paste(missing_groups, collapse = ", ")))
     }
   }
   
@@ -57,10 +49,7 @@ validate_diet_data <- function(diet, group_vars = NULL) {
   
   for (col in intersect(optional_meta_cols, names(diet))) {
     if (any(trimws(as.character(diet[[col]])) == "", na.rm = TRUE)) {
-      warnings <- c(
-        warnings,
-        paste("Empty values detected in optional column:", col)
-      )
+      warnings <- c(warnings,paste("Empty values detected in optional column:", col))
     }
   }
   
@@ -71,28 +60,12 @@ validate_diet_data <- function(diet, group_vars = NULL) {
   }
   
   if (length(prey_cols) > 0) {
-    negative_prey <- prey_cols[
-      vapply(
-        diet[prey_cols],
-        function(x) {
-          if (!is.numeric(x)) {
-            FALSE
-          } else {
-            any(x < 0, na.rm = TRUE)
-          }
-        },
-        logical(1)
-      )
-    ]
+    negative_prey <- prey_cols[vapply(diet[prey_cols],function(x) {if (!is.numeric(x)) {FALSE} else {any(x < 0, na.rm = TRUE)}},logical(1))]
     
     if (length(negative_prey) > 0) {
-      issues <- c(
-        issues,
-        paste(
+      issues <- c(issues,paste(
           "Negative values found in prey columns:",
-          paste(negative_prey, collapse = ", ")
-        )
-      )
+          paste(negative_prey, collapse = ", ")))
     }
     
     non_numeric_prey <- prey_cols[
@@ -104,9 +77,7 @@ validate_diet_data <- function(diet, group_vars = NULL) {
         warnings,
         paste(
           "Some prey columns are not numeric before cleaning:",
-          paste(non_numeric_prey, collapse = ", ")
-        )
-      )
+          paste(non_numeric_prey, collapse = ", ")))
     }
   }
   
@@ -114,10 +85,8 @@ validate_diet_data <- function(diet, group_vars = NULL) {
     list(
       check = "input_is_data_frame",
       status = "pass",
-      details = "Input is a data frame."
-    ),
-    list(
-      check = "required_columns",
+      details = "Input is a data frame."),
+    list(check = "required_columns",
       status = if (length(missing_required) == 0) "pass" else "fail",
       details = if (length(missing_required) == 0) {
         "All required columns are present."
@@ -132,8 +101,7 @@ validate_diet_data <- function(diet, group_vars = NULL) {
         "No duplicated column names."
       } else {
         "Duplicated column names detected."
-      }
-    ),
+      }),
     list(
       check = "unique_id_values",
       status = if ("unique_id" %in% names(diet) &&
@@ -145,8 +113,7 @@ validate_diet_data <- function(diet, group_vars = NULL) {
         "unique_id has no missing or empty values."
       } else {
         "Missing or empty values detected in unique_id."
-      }
-    ),
+      }),
     list(
       check = "duplicated_unique_id",
       status = if ("unique_id" %in% names(diet) &&
@@ -156,8 +123,7 @@ validate_diet_data <- function(diet, group_vars = NULL) {
         "No duplicated unique_id values."
       } else {
         "Duplicated unique_id values detected."
-      }
-    ),
+      }),
     list(
       check = "prey_columns_exist",
       status = if (length(prey_cols) > 0) "pass" else "fail",
@@ -165,8 +131,7 @@ validate_diet_data <- function(diet, group_vars = NULL) {
         paste("Prey columns found:", length(prey_cols))
       } else {
         "No prey columns found."
-      }
-    ),
+      }),
     list(
       check = "grouping_columns",
       status = if (is.null(group_vars) || length(setdiff(group_vars, names(diet))) == 0) "pass" else "fail",
@@ -176,21 +141,17 @@ validate_diet_data <- function(diet, group_vars = NULL) {
         paste("Grouping columns found:", paste(group_vars, collapse = ", "))
       } else {
         paste("Missing grouping columns:", paste(setdiff(group_vars, names(diet)), collapse = ", "))
-      }
-    )
-  )
+      }))
   
   summary_table <- do.call(
     rbind,
-    lapply(check_results, as.data.frame, stringsAsFactors = FALSE)
-  )
+    lapply(check_results, as.data.frame, stringsAsFactors = FALSE))
   
   list(
     passed = length(issues) == 0,
     issues = issues,
     warnings = warnings,
-    summary = summary_table
-  )
+    summary = summary_table)
 }
 
 
@@ -210,8 +171,7 @@ clean_diet_data <- function(diet) {
   if (!identical(original_names, names(diet))) {
     cleaning_log <- c(
       cleaning_log,
-      "Standardized column names with janitor::clean_names()."
-    )
+      "Standardized column names with janitor::clean_names().")
   }
   
   required_cols <- c("unique_id")
@@ -222,8 +182,7 @@ clean_diet_data <- function(diet) {
   if (length(missing_required) > 0) {
     stop(
       "Missing required columns: ",
-      paste(missing_required, collapse = ", ")
-    )
+      paste(missing_required, collapse = ", "))
   }
   
   prey_cols <- setdiff(names(diet), known_meta_cols)
@@ -288,8 +247,7 @@ clean_diet_data <- function(diet) {
     if (!identical(as.character(before_species), as.character(diet$species))) {
       cleaning_log <- c(
         cleaning_log,
-        "Standardized species names to lowercase with underscores."
-      )
+        "Standardized species names to lowercase with underscores.")
     }
   }
   
@@ -304,24 +262,17 @@ clean_diet_data <- function(diet) {
           readr::parse_double(
             cleaned,
             na = c("", "NA"),
-            locale = readr::locale(decimal_mark = ".")
-          )
-        }
-      )
-    )
+            locale = readr::locale(decimal_mark = "."))
+        }))
   
   prey_after_na <- sum(is.na(diet[prey_cols]))
   
-  cleaning_log <- c(
-    cleaning_log,
-    paste0(
-      "Converted prey columns to numeric; NA count changed from ",
+  cleaning_log <- c(cleaning_log,
+    paste0("Converted prey columns to numeric; NA count changed from ",
       prey_before_na,
       " to ",
       prey_after_na,
-      "."
-    )
-  )
+      "."))
   
   if (length(cleaning_log) == 0) {
     cleaning_log <- "No cleaning changes were applied."
@@ -329,8 +280,7 @@ clean_diet_data <- function(diet) {
   
   list(
     data = diet,
-    log = cleaning_log
-  )
+    log = cleaning_log)
 }
 
 #### Loop to run every possible combination ####
@@ -339,8 +289,7 @@ run_all_observed_scenarios <- function(
     clean_data,
     combo_vars = c("sampling_area", "season", "sex", "species"),
     include_filtered_data = FALSE,
-    warn_missing = TRUE
-) {
+    warn_missing = TRUE) {
   
   if (!is.data.frame(clean_data)) {
     stop("'clean_data' must be a data frame.")
@@ -356,15 +305,13 @@ run_all_observed_scenarios <- function(
   if (length(available_combo_vars) == 0) {
     stop(
       "None of the requested scenario columns were found in the dataset. Requested: ",
-      paste(combo_vars, collapse = ", ")
-    )
+      paste(combo_vars, collapse = ", "))
   }
   
   if (warn_missing && length(missing_combo_vars) > 0) {
     warning(
       "These requested scenario columns were not found and will be ignored: ",
-      paste(missing_combo_vars, collapse = ", ")
-    )
+      paste(missing_combo_vars, collapse = ", "))
   }
   
   scenario_table <- clean_data %>%
@@ -389,19 +336,16 @@ run_all_observed_scenarios <- function(
           as.character(value)
         }
       },
-      character(1)
-    )
+      character(1))
     
     scenario_name <- paste(
       paste(available_combo_vars, scenario_values, sep = "="),
-      collapse = "__"
-    )
+      collapse = "__")
     
     scenario_name <- gsub(
       "[^[:alnum:]_=-]+",
       "_",
-      scenario_name
-    )
+      scenario_name)
     
     scenario_names[i] <- scenario_name
     
@@ -429,21 +373,16 @@ run_all_observed_scenarios <- function(
       n_stomachs = dplyr::n_distinct(filtered_data$unique_id),
       fo = fo_summary(
         filtered_data,
-        group_vars = NULL
-      ),
+        group_vars = NULL),
       volume = volume_summary(
         filtered_data,
-        group_vars = NULL
-      ),
+        group_vars = NULL),
       iai = iai_summary(
         filtered_data,
-        group_vars = NULL
-      ),
+        group_vars = NULL),
       combined = diet_indices_summary(
         filtered_data,
-        group_vars = NULL
-      )
-    )
+        group_vars = NULL))
     
     if (include_filtered_data) {
       result$filtered_data <- filtered_data
@@ -460,8 +399,7 @@ run_all_observed_scenarios <- function(
     used_combo_vars = available_combo_vars,
     ignored_combo_vars = missing_combo_vars,
     scenario_table = scenario_table,
-    results = scenario_results
-  )
+    results = scenario_results)
 }
 
 #### Frequency of occurrence summary ####
@@ -480,8 +418,7 @@ fo_summary <- function(diet, group_vars = NULL) {
   if (length(missing_required) > 0) {
     stop(
       "Missing required columns: ",
-      paste(missing_required, collapse = ", ")
-    )
+      paste(missing_required, collapse = ", "))
   }
   
   if (!is.null(group_vars)) {
@@ -489,8 +426,7 @@ fo_summary <- function(diet, group_vars = NULL) {
     if (length(missing_groups) > 0) {
       stop(
         "Invalid grouping columns: ",
-        paste(missing_groups, collapse = ", ")
-      )
+        paste(missing_groups, collapse = ", "))
     }
   }
   
@@ -504,26 +440,22 @@ fo_summary <- function(diet, group_vars = NULL) {
     tidyr::pivot_longer(
       cols = tidyselect::all_of(prey_cols),
       names_to = "prey_item",
-      values_to = "volume"
-    )
+      values_to = "volume")
   
   diet_occurrence <- diet_long %>%
     dplyr::mutate(
-      present = dplyr::if_else(volume > 0, 1, 0, missing = 0)
-    )
+      present = dplyr::if_else(volume > 0, 1, 0, missing = 0))
   
   non_empty_stomachs <- diet_occurrence %>%
     dplyr::summarise(
       non_empty = any(present == 1),
-      .by = unique_id
-    )
+      .by = unique_id)
   
   if (any(non_empty_stomachs$non_empty)) {
     diet_occurrence_nonempty <- diet_occurrence %>%
       dplyr::filter(
         unique_id %in%
-          non_empty_stomachs$unique_id[non_empty_stomachs$non_empty]
-      )
+          non_empty_stomachs$unique_id[non_empty_stomachs$non_empty])
   } else {
     diet_occurrence_nonempty <- diet_occurrence
   }
@@ -535,8 +467,7 @@ fo_summary <- function(diet, group_vars = NULL) {
       stomachs_with_prey = sum(present, na.rm = TRUE),
       total_stomachs = dplyr::n_distinct(unique_id),
       frequency_occurrence = (stomachs_with_prey / total_stomachs) * 100,
-      .by = tidyselect::all_of(summary_groups)
-    )
+      .by = tidyselect::all_of(summary_groups))
   
   freq_occ
 }
@@ -557,8 +488,7 @@ volume_summary <- function(diet, group_vars = NULL) {
   if (length(missing_required) > 0) {
     stop(
       "Missing required columns: ",
-      paste(missing_required, collapse = ", ")
-    )
+      paste(missing_required, collapse = ", "))
   }
   
   if (!is.null(group_vars)) {
@@ -566,8 +496,7 @@ volume_summary <- function(diet, group_vars = NULL) {
     if (length(missing_groups) > 0) {
       stop(
         "Invalid grouping columns: ",
-        paste(missing_groups, collapse = ", ")
-      )
+        paste(missing_groups, collapse = ", "))
     }
   }
   
@@ -584,8 +513,7 @@ volume_summary <- function(diet, group_vars = NULL) {
       values_to = "volume"
     ) %>%
     dplyr::mutate(
-      volume = as.numeric(volume)
-    )
+      volume = as.numeric(volume))
   
   summary_groups <- c(group_vars, "prey_item")
   total_groups <- group_vars
@@ -593,8 +521,7 @@ volume_summary <- function(diet, group_vars = NULL) {
   prey_volume <- diet_long %>%
     dplyr::summarise(
       total_volume_item = sum(volume, na.rm = TRUE),
-      .by = tidyselect::all_of(summary_groups)
-    )
+      .by = tidyselect::all_of(summary_groups))
   
   if (is.null(group_vars)) {
     total_volume <- sum(prey_volume$total_volume_item, na.rm = TRUE)
@@ -605,16 +532,13 @@ volume_summary <- function(diet, group_vars = NULL) {
         volume_percentage = dplyr::if_else(
           total_volume_all > 0,
           (total_volume_item / total_volume_all) * 100,
-          NA_real_
-        )
-      ) %>%
+          NA_real_)) %>%
       dplyr::select(prey_item, total_volume_item, total_volume_all, volume_percentage)
   } else {
     total_volume_by_group <- diet_long %>%
       dplyr::summarise(
         total_volume_all = sum(volume, na.rm = TRUE),
-        .by = tidyselect::all_of(total_groups)
-      )
+        .by = tidyselect::all_of(total_groups))
     
     vol_pct <- prey_volume %>%
       dplyr::left_join(total_volume_by_group, by = group_vars) %>%
@@ -622,9 +546,7 @@ volume_summary <- function(diet, group_vars = NULL) {
         volume_percentage = dplyr::if_else(
           total_volume_all > 0,
           (total_volume_item / total_volume_all) * 100,
-          NA_real_
-        )
-      )
+          NA_real_))
   }
   
   vol_pct
@@ -642,8 +564,7 @@ iai_summary <- function(diet, group_vars = NULL) {
   iai_base <- fo %>%
     dplyr::left_join(vol, by = join_cols) %>%
     dplyr::mutate(
-      fo_times_v = frequency_occurrence * volume_percentage
-    )
+      fo_times_v = frequency_occurrence * volume_percentage)
   
   if (is.null(group_vars)) {
     
@@ -652,13 +573,11 @@ iai_summary <- function(diet, group_vars = NULL) {
     if (total_fo_times_v > 0) {
       iai <- iai_base %>%
         dplyr::mutate(
-          iai = (fo_times_v / total_fo_times_v) * 100
-        )
+          iai = (fo_times_v / total_fo_times_v) * 100)
     } else {
       iai <- iai_base %>%
         dplyr::mutate(
-          iai = NA_real_
-        )
+          iai = NA_real_)
     }
     
   } else {
@@ -671,9 +590,7 @@ iai_summary <- function(diet, group_vars = NULL) {
       dplyr::mutate(
         iai = dplyr::case_when(
           total_fo_times_v > 0 ~ (fo_times_v / total_fo_times_v) * 100,
-          TRUE ~ NA_real_
-        )
-      )
+          TRUE ~ NA_real_))
   }
   
   iai
@@ -690,15 +607,13 @@ diet_indices_summary <- function(diet, group_vars = NULL) {
       tidyselect::all_of(c(group_vars, "prey_item")),
       total_volume_item,
       total_volume_all,
-      volume_percentage
-    )
+      volume_percentage)
   
   iai <- iai_summary(diet, group_vars = group_vars) %>%
     dplyr::select(
       tidyselect::all_of(c(group_vars, "prey_item")),
       fo_times_v,
-      iai
-    )
+      iai)
   
   join_cols <- c(group_vars, "prey_item")
   
@@ -714,8 +629,7 @@ diet_indices_summary <- function(diet, group_vars = NULL) {
       dplyr::arrange(
         dplyr::across(tidyselect::all_of(group_vars)),
         dplyr::desc(iai),
-        prey_item
-      )
+        prey_item)
   }
   
   combined
@@ -733,8 +647,7 @@ run_diet_pipeline <- function(
       species_sampling_area = c("species", "sampling_area"),
       season = "season",
       sex = "sex",
-      season_sex = c("season", "sex")
-    )
+      season_sex = c("season", "sex"))
 ) {
   
   validation_before <- validate_diet_data(diet)
@@ -748,8 +661,7 @@ run_diet_pipeline <- function(
   analysis <- list(
     fo = list(),
     volume = list(),
-    iai = list()
-  )
+    iai = list())
   
   for (nm in names(analysis_groups)) {
     current_groups <- analysis_groups[[nm]]
@@ -757,18 +669,15 @@ run_diet_pipeline <- function(
     if (all(current_groups %in% names(diet_clean))) {
       analysis$fo[[nm]] <- fo_summary(
         diet_clean,
-        group_vars = current_groups
-      )
+        group_vars = current_groups)
       
       analysis$volume[[nm]] <- volume_summary(
         diet_clean,
-        group_vars = current_groups
-      )
+        group_vars = current_groups)
       
       analysis$iai[[nm]] <- iai_summary(
         diet_clean,
-        group_vars = current_groups
-      )
+        group_vars = current_groups)
     }
   }
   
@@ -783,6 +692,5 @@ run_diet_pipeline <- function(
     cleaned_data = diet_clean,
     cleaning_log = cleaning_log,
     validation_after = validation_after,
-    analysis = analysis
-  )
+    analysis = analysis)
 }
