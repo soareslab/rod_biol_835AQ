@@ -1,4 +1,6 @@
 #### Author: Rodrigo Martin de Oliveira ####
+# Script for the class 835AQ
+# Date: 2026-08-20
 
 #### Load necessary libraries ####
 library(tidyverse)
