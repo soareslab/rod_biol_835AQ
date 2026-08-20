@@ -264,7 +264,7 @@ server <- function(input, output, session) {
         .groups = "drop"
       ) %>%
       mutate(
-        V_percent = ifelse(sum(total_volume) > 0,
+        V_percent = ifelse(total_volume > 0,
                            (total_volume / sum(total_volume)) * 100,
                            0)
       ) %>%
