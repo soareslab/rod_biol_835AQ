@@ -4,6 +4,7 @@ A reproducible R workflow for fish diet data analysis, including data validation
 
 ## Contents
 
+- [Rodrigo Martin de Oliveira](#rodrigo-martin-de-oliveira)
 - [Project overview](#project-overview)
 - [Dataset structure](#dataset-structure)
 - [Core workflow](#core-workflow)
@@ -12,6 +13,9 @@ A reproducible R workflow for fish diet data analysis, including data validation
 - [Exploratory scenarios](#exploratory-scenarios)
 - [Outputs](#outputs)
 - [Notes and good practices](#notes-and-good-practices)
+
+## Rodrigo Martin de Oliveira
+
 
 ## Project overview
 
