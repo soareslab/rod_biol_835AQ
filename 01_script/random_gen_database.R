@@ -1,5 +1,5 @@
-#### this script generates a random database of fish species and their prey volumes for testing purposes.
-auto_gen_fish_data <- function(auto_gen_fish_data) {
+### this script generates a random database of fish species and their prey volumes for testing purposes.
+#auto_gen_fish_data
 set.seed(123) # for reproducibility
 
 # Number of fish sampled
@@ -50,4 +50,3 @@ for (i in 1:n_prey)
 
 # save the generated data to a CSV file 
 write.csv(fish_data, "02_rawdata/generated_fish_data.csv", row.names = FALSE)
-}
