@@ -1,6 +1,6 @@
 ### this script generates a random database of fish species and their prey volumes for testing purposes.
 #auto_gen_fish_data
-set.seed(123) # for reproducibility
+{set.seed(123) # for reproducibility
 
 # Number of fish sampled
 n_fish <- 1200
@@ -8,11 +8,23 @@ n_fish <- 1200
 # Four sampling areas
 sampling_areas <- c("Area_01", "Area_02", "Area_03", "Area_04", "Area_05", "Area_06", "Area_07", "Area_08")
 
+# Month ex
+month <- c("janvier", "fevrier", "mars", "avril", "mai", "juin", "juillet", "aout", "septembre", "octobre", "novembre", "decembre")
+
+# Region
+region <- c("montain", "plains", "valley", "pothole")
+
+# Habitat
+habitat <- c("river", "marine", "estuary", "lake", "sky", "fast-stream", "slow-stream")
+
 # Example seasons
 seasons_list <- c("Spring", "Summer", "Autumn", "Winter")
 
 # Example sex
-sex_list <- c("M", "F") 
+sex_list <- c("M", "F")
+
+# size class
+class_size <- c("H-1", "I-2", "J-3", "K-4", "L-5", "M-6", "N-7")
 
 # Example fish species names
 species_list <- c(
@@ -32,8 +44,12 @@ n_prey <- 60
 # Create main columns
 fish_data <- data.frame(
   sampling_area = sample(sampling_areas, n_fish, replace = TRUE),
+  month = sample(month, n_fish, replace = TRUE),
+  region = sample(region, n_fish, replace = TRUE),
+  habitat = sample(habitat, n_fish, replace = TRUE),
   season = sample(seasons_list, n_fish, replace = TRUE),
   sex = sample(sex_list, n_fish, replace = TRUE),
+  class = sample(class_size, n_fish, replace = TRUE),
   unique_id = sprintf("F%04d", 1:n_fish),
   species = sample(species_list, n_fish, replace = TRUE),
   stringsAsFactors = FALSE
@@ -49,4 +65,4 @@ for (i in 1:n_prey)
 
 
 # save the generated data to a CSV file 
-write.csv(fish_data, "02_rawdata/generated_fish_data.csv", row.names = FALSE)
+write.csv(fish_data, "02_rawdata/generated_fish_data.csv", row.names = FALSE)}
