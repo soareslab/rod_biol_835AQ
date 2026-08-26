@@ -10,6 +10,8 @@ BIOL835AQ
 
 The two-table workflow was proposed to future-proof the package by separating prey data from metadata, allowing new ecological grouping variables to be introduced over time without interfering with diet calculations.
 
+Correlational data-sets, two data-sets linked by one column, with the goal of keeping information in a more organized way, avoiding redundant information, keeping the Unique identification id as mandatory shared key.
+
 A time-proof function
 Ecological analysis changes over time, and the variables scientists consider biologically meaningful may also change. Today, users may compare by season; later, they may compare by rainfall cycle, hydrological phase, disturbance category, restoration status, moon phase, habitat fragmentation, or variables not yet commonly used.
 A metadata table that is independent from the prey table would make the grouping system much more future-oriented because any new grouping field could simply be added to the metadata dataset without redesigning the prey-processing logic.
