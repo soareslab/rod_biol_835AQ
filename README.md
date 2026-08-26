@@ -4,8 +4,15 @@
 
 BIOL835AQ
 
-| NOTE |
-| The functions were redesigned to allow users to explicitly define the unique identifier column, metadata columns, and prey-item columns, improving flexibility and making the workflow more robust for nonstandard datasets with different structures. |
+| NOTE IN WORKING PROCESS|
+
+| The functions were redesigned to allow users to add two data-sets, one containing metadata and one containing diet information, this way would be closer to the "Best practices" in science, these two data-sets would be conected by the Unique identificator from each organism analysed, improving flexibility and making the workflow more robust for data-sets that contain a `n` number of columns of metadata. |
+
+The two-table workflow was proposed to future-proof the package by separating prey data from metadata, allowing new ecological grouping variables to be introduced over time without interfering with diet calculations.
+
+A time-proof function
+Ecological analysis changes over time, and the variables scientists consider biologically meaningful may also change. Today, users may compare by season; later, they may compare by rainfall cycle, hydrological phase, disturbance category, restoration status, moon phase, habitat fragmentation, or variables not yet commonly used.
+A metadata table that is independent from the prey table would make the grouping system much more future-oriented because any new grouping field could simply be added to the metadata dataset without redesigning the prey-processing logic.
 
 
 This repo is an R-based workflow for fish diet (but not limited to fish) analysis using stomach-content volume data. The project provides functions to validate raw datasets, clean and standardize values, calculate Frequency of Occurrence (FO%), Volume Percentage (V%), and Alimentary Index (IAi), and generate exploratory subgroup analyses across observed combinations of metadata variables.
