@@ -5,7 +5,7 @@
 BIOL835AQ
 
 | NOTE |
-| The functions were redesigned to allow users to explicitly define the unique identifier column, metadata columns, and prey-item columns, improving flexibility and making the workflow more robust for messy datasets with different structures.|
+| The functions were redesigned to allow users to explicitly define the unique identifier column, metadata columns, and prey-item columns, improving flexibility and making the workflow more robust for nonstandard datasets with different structures.|
 
 
 This repo is an R-based workflow for fish diet (but not limited to fish) analysis using stomach-content volume data. The project provides functions to validate raw datasets, clean and standardize values, calculate Frequency of Occurrence (FO%), Volume Percentage (V%), and Alimentary Index (IAi), and generate exploratory subgroup analyses across observed combinations of metadata variables.
