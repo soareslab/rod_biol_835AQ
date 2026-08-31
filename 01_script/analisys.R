@@ -27,11 +27,8 @@ combined_overall <- diet_indices_summary(clean_data)
 
 #### Split the data-set meta-data/diet-data
 # Here you can select the columns that contain metadata and the ones that contain diet data
-data.frame_metadata <- select(clean_data, "sampling_area":"species")
 data.fame_diet <- select(clean_data, "prey_1":"prey_60")
-
-####
-run_diet_pipeline(clean_data,data.frame_metadada,c(data.frame_diet$x,data.frame_metadada$y))
+data.frame_metadata <- select(clean_data, "sampling_area":"species")
 
 #### Frequency of Occurrence options #####
 fo_summary(clean_data)

@@ -3,10 +3,10 @@
 {set.seed(123) # for reproducibility
 
 # Number of fish sampled
-n_fish <- 1200
+n_fish <- 2400
 
 # Four sampling areas
-sampling_areas <- c("Area_01", "Area_02", "Area_03", "Area_04", "Area_05", "Area_06", "Area_07", "Area_08")
+sampling_areas <- c("area_01", "area_02", "area_03", "area_04", "area_05", "area_06", "area_07", "area_08")
 
 # Month ex
 month <- c("janvier", "fevrier", "mars", "avril", "mai", "juin", "juillet", "aout", "septembre", "octobre", "novembre", "decembre")
@@ -15,16 +15,16 @@ month <- c("janvier", "fevrier", "mars", "avril", "mai", "juin", "juillet", "aou
 region <- c("montain", "plains", "valley", "pothole")
 
 # Habitat
-habitat <- c("river", "marine", "estuary", "lake", "sky", "fast-stream", "slow-stream")
+habitat <- c("river", "marine", "estuary", "lake", "puddle", "fast-stream", "slow-stream")
 
 # Example seasons
-seasons_list <- c("Spring", "Summer", "Autumn", "Winter")
+seasons_list <- c("spring", "summer", "autumn", "winter")
 
 # Example sex
-sex_list <- c("M", "F")
+sex_list <- c("m", "f", "i")
 
 # size class
-class_size <- c("H-1", "I-2", "J-3", "K-4", "L-5", "M-6", "N-7")
+class_size <- c("class_1", "class_2", "class_3", "class_4", "class_5", "class_6", "class_7")
 
 # Example fish species names
 species_list <- c(
@@ -66,3 +66,4 @@ for (i in 1:n_prey)
 
 # save the generated data to a CSV file 
 write.csv(fish_data, "02_rawdata/generated_fish_data.csv", row.names = FALSE)}
+
