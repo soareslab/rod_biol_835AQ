@@ -25,6 +25,13 @@ validate_diet_data(clean_data)
 #### For all diet summary, FO%, VO5 and IAi% ####
 combined_overall <- diet_indices_summary(clean_data)
 
+#### Split the data-set meta-data/diet-data
+data.fame_diet <- select(clean_data, "prey_1":"prey_60")
+data.frame_metadata <- select(clean_data, "sampling_area":"species")
+
+####
+run_diet_pipeline(data.frame_diet,data.frame_metadada,c(data.frame_metadada$x,data.frame_metadada$y)
+
 #### Frequency of Occurrence options #####
 fo_summary(clean_data)
 
