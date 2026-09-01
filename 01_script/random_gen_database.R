@@ -3,7 +3,7 @@
 {set.seed(123) # for reproducibility
 
 # Number of fish sampled
-n_fish <- 2400
+n_fish <- 2700
 
 # Four sampling areas
 sampling_areas <- c("area_01", "area_02", "area_03", "area_04", "area_05", "area_06", "area_07", "area_08")
@@ -65,5 +65,6 @@ for (i in 1:n_prey)
 
 
 # save the generated data to a CSV file 
-write.csv(fish_data, "02_rawdata/generated_fish_data.csv", row.names = FALSE)}
+  write.csv(fish_data, "02_rawdata/generated_fish_data.csv", row.names = FALSE)}
+
 

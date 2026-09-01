@@ -29,6 +29,7 @@ combined_overall <- diet_indices_summary(clean_data)
 # Here you can select the columns that contain metadata and the ones that contain diet data
 data.fame_diet <- select(clean_data, "prey_1":"prey_60")
 data.frame_metadata <- select(clean_data, "sampling_area":"species")
+ignore <- select(clean_data, "class")
 
 #### Frequency of Occurrence options #####
 fo_summary(clean_data)
